@@ -1,0 +1,215 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { STATIC_CATEGORIES, STATIC_SERVICES } from "@/config/catalog";
+import { endSession, passwordMatches, requireAdmin, startSession } from "@/lib/admin/session";
+import { createAdminClient } from "@/lib/supabase/admin";
+
+const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
+const optional = (f: FormData, k: string) => str(f, k) || null;
+const bool = (f: FormData, k: string) => f.get(k) === "on";
+const int = (f: FormData, k: string, d = 0) => { const n = parseInt(str(f, k), 10); return Number.isFinite(n) ? n : d; };
+const slugify = (s: string) =>
+  s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+
+/** Redirige avec un message (ok ou erreur) affiché en haut de la page. */
+function done(path: string, msg: string, error = false): never {
+  redirect(`${path}${path.includes("?") ? "&" : "?"}${error ? "err" : "ok"}=${encodeURIComponent(msg)}`);
+}
+
+function db() {
+  const client = createAdminClient();
+  if (!client) done("/admin", "La base de données n'est pas connectée (clé Supabase manquante).", true);
+  return client;
+}
+
+/** Le site public est mis en cache 60 s : on le rafraîchit tout de suite après chaque modification. */
+function publish() {
+  revalidatePath("/", "layout");
+}
+
+// --------------------------------------------------------------------------- session
+export async function login(_: unknown, form: FormData) {
+  if (!passwordMatches(str(form, "password"))) {
+    await new Promise((r) => setTimeout(r, 900));
+    return { error: "Mot de passe incorrect." };
+  }
+  await startSession();
+  redirect("/admin");
+}
+
+export async function logout() {
+  await endSession();
+  redirect("/admin/login");
+}
+
+// --------------------------------------------------------------------------- prestations
+export async function saveService(form: FormData) {
+  await requireAdmin();
+  const client = db();
+  const id = str(form, "id");
+  const name = str(form, "name");
+  const euros = parseFloat(str(form, "price").replace(",", "."));
+  const back = id ? `/admin/prestations/${id}` : "/admin/prestations/nouvelle";
+  if (!name) done(back, "Le nom est obligatoire.", true);
+  if (!Number.isFinite(euros) || euros <= 0) done(back, "Le prix doit être un nombre supérieur à 0.", true);
+  const category_id = str(form, "category_id");
+  if (!category_id) done(back, "Choisissez une catégorie.", true);
+  const booking_url = optional(form, "booking_url");
+  if (booking_url && !/^https:\/\//.test(booking_url)) done(back, "Le lien de réservation doit commencer par https://", true);
+  const duration = int(form, "duration_minutes");
+  if (duration < 0 || duration > 720) done(back, "La durée doit être comprise entre 0 et 720 minutes.", true);
+
+  const row = {
+    name,
+    slug: slugify(str(form, "slug") || name),
+    category_id,
+    short_description: optional(form, "short_description"),
+    description: optional(form, "description"),
+    preparation_notes: optional(form, "preparation_notes"),
+    duration_minutes: duration > 0 ? duration : null,
+    price_cents: Math.round(euros * 100),
+    price_is_from: bool(form, "price_is_from"),
+    booking_url,
+    is_active: bool(form, "is_active"),
+    sort_order: int(form, "sort_order"),
+  };
+  if (!row.slug) done(back, "Nom invalide : impossible de créer l'adresse de la page.", true);
+
+  const { data, error } = id
+    ? await client!.from("services").update(row).eq("id", id).select("id").single()
+    : await client!.from("services").insert(row).select("id").single();
+  if (error) done(back, error.code === "23505" ? "Cette adresse de page (slug) est déjà utilisée." : `Enregistrement impossible : ${error.message}`, true);
+  publish();
+  done(`/admin/prestations/${data!.id}`, "Prestation enregistrée. Le site est à jour.");
+}
+
+export async function setServiceActive(form: FormData) {
+  await requireAdmin();
+  const { error } = await db()!.from("services").update({ is_active: bool(form, "active") }).eq("id", str(form, "id"));
+  if (error) done("/admin", error.message, true);
+  publish();
+  done("/admin", bool(form, "active") ? "Prestation affichée sur le site." : "Prestation masquée du site.");
+}
+
+export async function deleteService(form: FormData) {
+  await requireAdmin();
+  const { error } = await db()!.from("services").delete().eq("id", str(form, "id"));
+  if (error) done("/admin", error.message, true);
+  publish();
+  done("/admin", "Prestation supprimée.");
+}
+
+/** Copie le catalogue Acuity intégré au site dans la base, pour pouvoir le modifier. Rejouable : met à jour par slug. */
+export async function importCatalog() {
+  await requireAdmin();
+  const client = db()!;
+  const { error: e1 } = await client.from("service_categories").upsert(
+    STATIC_CATEGORIES.map((c) => ({ slug: c.slug, name: c.name, image_path: c.image_path, sort_order: c.sort_order, is_active: true })),
+    { onConflict: "slug" },
+  );
+  if (e1) done("/admin", `Import impossible : ${e1.message}`, true);
+  const { data: cats } = await client.from("service_categories").select("id, slug");
+  const catId = new Map((cats ?? []).map((c) => [c.slug as string, c.id as string]));
+  const rows = STATIC_SERVICES.flatMap((s) => {
+    const category_id = catId.get(s.service_categories?.slug ?? "");
+    if (!category_id) return [];
+    return [{
+      slug: s.slug, name: s.name, category_id, short_description: s.short_description, description: s.description,
+      duration_minutes: s.duration_minutes, price_cents: s.price_cents, price_is_from: s.price_is_from,
+      preparation_notes: s.preparation_notes, image_path: s.image_path, booking_url: s.booking_url,
+      sort_order: s.sort_order, is_active: true,
+    }];
+  });
+  const { error: e2 } = await client.from("services").upsert(rows, { onConflict: "slug" });
+  if (e2) done("/admin", `Import impossible : ${e2.message}`, true);
+  publish();
+  done("/admin", `${rows.length} prestations importées.`);
+}
+
+// --------------------------------------------------------------------------- catégories
+export async function saveCategory(form: FormData) {
+  await requireAdmin();
+  const name = str(form, "name");
+  if (!name) done("/admin/categories", "Le nom est obligatoire.", true);
+  const { error } = await db()!.from("service_categories")
+    .update({ name, sort_order: int(form, "sort_order"), is_active: bool(form, "is_active") }).eq("id", str(form, "id"));
+  if (error) done("/admin/categories", error.message, true);
+  publish();
+  done("/admin/categories", "Catégorie enregistrée.");
+}
+
+// --------------------------------------------------------------------------- coordonnées du salon
+export async function saveSettings(form: FormData) {
+  await requireAdmin();
+  const social: Record<string, string | null> = {};
+  for (const k of ["instagram", "tiktok", "snapchat"]) {
+    const v = optional(form, k);
+    if (v && !/^https:\/\//.test(v)) done("/admin/salon", `Le lien ${k} doit commencer par https://`, true);
+    social[k] = v;
+  }
+  const legal: Record<string, string | null> = {};
+  for (const k of ["raison_sociale", "siret", "code_postal", "directeur_publication", "hebergeur"]) legal[k] = optional(form, k);
+  const { error } = await db()!.from("salon_settings").upsert({
+    id: true, phone: optional(form, "phone"), email: optional(form, "email"), whatsapp: optional(form, "whatsapp"),
+    address: optional(form, "address"), hours_note: optional(form, "hours_note"), social, legal,
+  });
+  if (error) done("/admin/salon", error.message, true);
+  publish();
+  done("/admin/salon", "Informations du salon enregistrées.");
+}
+
+// --------------------------------------------------------------------------- photos
+const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+
+export async function uploadPhoto(form: FormData) {
+  await requireAdmin();
+  const file = form.get("file");
+  const section = str(form, "section");
+  if (!["salon", "about"].includes(section)) done("/admin/photos", "Section inconnue.", true);
+  if (!(file instanceof File) || file.size === 0) done("/admin/photos", "Choisissez une photo.", true);
+  const f = file as File;
+  if (!IMAGE_TYPES.includes(f.type)) done("/admin/photos", "Format accepté : JPG, PNG, WebP ou AVIF.", true);
+  if (f.size > 10 * 1024 * 1024) done("/admin/photos", "La photo dépasse 10 Mo : réduisez-la avant de l'envoyer.", true);
+  const alt = str(form, "alt");
+  if (!alt) done("/admin/photos", "Décrivez la photo en quelques mots (texte alternatif, utile à l'accessibilité).", true);
+
+  const client = db()!;
+  const ext = f.type.split("/")[1];
+  const key = `${section}/${Date.now()}-${slugify(f.name.replace(/\.[^.]+$/, "")) || "photo"}.${ext}`;
+  const up = await client.storage.from("site-media").upload(key, f, { contentType: f.type, upsert: false });
+  if (up.error) done("/admin/photos", `Envoi impossible : ${up.error.message}`, true);
+  const { data: pub } = client.storage.from("site-media").getPublicUrl(key);
+  const { data: last } = await client.from("media").select("sort_order").eq("section", section)
+    .order("sort_order", { ascending: false }).limit(1).maybeSingle();
+  const { error } = await client.from("media").insert({
+    kind: "photo", section, path: pub.publicUrl, alt, sort_order: (last?.sort_order ?? 0) + 1, is_active: true,
+  });
+  if (error) done("/admin/photos", error.message, true);
+  publish();
+  done("/admin/photos", "Photo ajoutée.");
+}
+
+export async function savePhoto(form: FormData) {
+  await requireAdmin();
+  const { error } = await db()!.from("media")
+    .update({ alt: str(form, "alt"), sort_order: int(form, "sort_order"), is_active: bool(form, "is_active") }).eq("id", str(form, "id"));
+  if (error) done("/admin/photos", error.message, true);
+  publish();
+  done("/admin/photos", "Photo mise à jour.");
+}
+
+export async function deletePhoto(form: FormData) {
+  await requireAdmin();
+  const client = db()!;
+  const id = str(form, "id");
+  const { data } = await client.from("media").select("path").eq("id", id).maybeSingle();
+  const { error } = await client.from("media").delete().eq("id", id);
+  if (error) done("/admin/photos", error.message, true);
+  const marker = "/object/public/site-media/";
+  const at = data?.path?.indexOf(marker) ?? -1;
+  if (data && at >= 0) await client.storage.from("site-media").remove([decodeURIComponent(data.path.slice(at + marker.length))]);
+  publish();
+  done("/admin/photos", "Photo supprimée.");
+}
