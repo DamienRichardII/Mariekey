@@ -9,8 +9,7 @@ Les rendez-vous, disponibilités et paiements se gèrent **dans Acuity**, pas ic
 | Masquer une prestation | `services` | `is_active` = false |
 | Options d'une prestation (affichage) | `service_options` | `service_id`, `name`, `price_delta_cents`, `duration_delta_minutes` |
 | Catégories (accueil) | `service_categories` | `name`, `image_path`, `sort_order`, `is_active` |
-| Photos / vidéos | `media` (+ Storage `site-media`) | `section` : hero, salon, gallery, about ; `path`, `alt`, `sort_order` |
-| Avant / après | `before_after_pairs` | `before_media_id`, `after_media_id` (2 médias `before_after` identifiés avec certitude) |
+| Photos / vidéos | `media` (+ Storage `site-media`) | `section` : salon, about (aucune photo de cliente) ; `path`, `alt`, `sort_order` |
 | Coordonnées, WhatsApp, réseaux | `salon_settings` | `phone`, `email`, `whatsapp`, `address`, `social` (`{"instagram":"https://…"}`), `hours_note` |
 | Mentions légales | `salon_settings.legal` | clés : `raison_sociale`, `siret`, `code_postal`, `directeur_publication`, `hebergeur` |
 | Horaires affichés | `opening_hours` | `is_open`, `open_time`, `close_time` (1 = lundi … 7 = dimanche) |

@@ -20,7 +20,8 @@ export async function getCategories(): Promise<CatalogResult<Category[]>> {
   const { data, error } = await db.from("service_categories").select("id, slug, name, image_path, sort_order")
     .eq("is_active", true).order("sort_order").order("name");
   if (error || !data) return { ok: false, reason: "error" };
-  return { ok: true, data: (data as Category[]).map((c) => ({ ...c, image_path: c.image_path ?? STATIC_CATEGORIES.find((s) => s.slug === c.slug)?.image_path ?? null })) };
+  // Visuels imposés par le code (aucune photo de cliente) : l'image de la base est ignorée.
+  return { ok: true, data: (data as Category[]).map((c) => ({ ...c, image_path: STATIC_CATEGORIES.find((s) => s.slug === c.slug)?.image_path ?? null })) };
 }
 
 const SERVICE_COLS =

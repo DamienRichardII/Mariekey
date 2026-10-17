@@ -1,30 +1,12 @@
 {
   "files": [
     "/images/about/outils.jpg",
-    "/images/categories/coloration.jpg",
-    "/images/categories/lissage.jpg",
-    "/images/categories/pose-perruque.jpg",
     "/images/categories/soin-capillaire.jpg",
-    "/images/gallery/blond-ombre.jpg",
-    "/images/gallery/cliente-lunettes.jpg",
-    "/images/gallery/coiffure-bordeaux.jpg",
-    "/images/gallery/lisse-noir.jpg",
-    "/images/gallery/ondulations-noires.jpg",
-    "/images/gallery/queue-cote-peignoir.jpg",
-    "/images/gallery/queue-haute-cardigan.jpg",
-    "/images/gallery/queue-lisse.jpg",
     "/images/hero/cover.jpg",
-    "/images/hero/hero.jpg",
     "/images/logo/logo.png",
     "/images/salon/salon-entree.jpg",
     "/images/salon/salon-lavage.jpg",
     "/images/salon/salon-miroir.jpg",
-    "/images/salon/salon-reception.jpg",
-    "/videos/video-1-cardigan-2s.jpg",
-    "/videos/video-1-cardigan-2s.mp4",
-    "/videos/video-2-chemise-blanche-12s.jpg",
-    "/videos/video-2-chemise-blanche-12s.mp4",
-    "/videos/video-3-lissage-dos-2s.jpg",
-    "/videos/video-3-lissage-dos-2s.mp4"
+    "/images/salon/salon-reception.jpg"
   ]
 }

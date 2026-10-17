@@ -14,9 +14,13 @@ export function CategoryCards({ categories }: { categories: Category[] }) {
             <Reveal delay={i * 0.05}>
               <Link href={`/prestations#${c.slug}`} aria-label={`${c.name} — voir les prestations`}
                 className="group block overflow-hidden rounded-2xl border border-line bg-white shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
-                <div className="relative aspect-[3/4] overflow-hidden">
-                  <Photo src={c.image_path} alt="" sizes="(min-width:1024px) 20vw, 44vw" expected={`public/images/categories/${c.slug}.jpg`}
-                    className="transition-transform duration-700 group-hover:scale-[1.04]" />
+                <div className="relative aspect-[3/4] overflow-hidden bg-cream">
+                  {c.image_path ? (
+                    <Photo src={c.image_path} alt="" sizes="(min-width:1024px) 20vw, 44vw" expected={`public/images/categories/${c.slug}.jpg`}
+                      className="transition-transform duration-700 group-hover:scale-[1.04]" />
+                  ) : (
+                    <span aria-hidden className="absolute inset-0 grid place-items-center font-serif text-6xl text-walnut/70">{String(i + 1).padStart(2, "0")}</span>
+                  )}
                 </div>
                 <div className="flex items-center justify-between gap-2 px-4 py-3.5">
                   <span className="text-[15px] font-medium">{c.name}</span>

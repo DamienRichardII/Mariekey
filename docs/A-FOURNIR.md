@@ -10,8 +10,7 @@
 **Fichiers**
 - Logo : intégré (PNG). Une version SVG vectorielle serait plus nette sur grand écran.
 - Photo « Tresses » (catégorie sans visuel pour l'instant).
-- Une vraie vidéo du salon si souhaitée (les 3 vidéos fournies sont en galerie ; aucune ne montre le salon).
-- Photos avant/après identifiées avec certitude (section masquée sinon).
+- Photos du salon supplémentaires si souhaité. Politique : aucune photo de cliente n'est publiée sur le site.
 
 **Accès**
 - Projet Supabase (URL + clé anon), compte Vercel, nom de domaine, accès Google Search Console si besoin.

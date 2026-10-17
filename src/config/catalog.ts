@@ -10,21 +10,21 @@ export const STATIC_CATEGORIES: Category[] = [
     "id": "static-pose-customisation",
     "slug": "pose-customisation",
     "name": "Pose & customisation",
-    "image_path": "/images/categories/pose-perruque.jpg",
+    "image_path": null,
     "sort_order": 1
   },
   {
     "id": "static-confection",
     "slug": "confection",
     "name": "Confection de perruque",
-    "image_path": "/images/gallery/coiffure-bordeaux.jpg",
+    "image_path": null,
     "sort_order": 2
   },
   {
     "id": "static-coloration",
     "slug": "coloration",
     "name": "Coloration",
-    "image_path": "/images/categories/coloration.jpg",
+    "image_path": null,
     "sort_order": 3
   },
   {
@@ -38,7 +38,7 @@ export const STATIC_CATEGORIES: Category[] = [
     "id": "static-makeup-total-look",
     "slug": "makeup-total-look",
     "name": "Makeup & total look",
-    "image_path": "/images/gallery/queue-cote-peignoir.jpg",
+    "image_path": null,
     "sort_order": 5
   },
   {

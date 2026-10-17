@@ -1,18 +1,17 @@
-import { BeforeAfter } from "@/components/site/before-after";
 import { CategoryCards } from "@/components/site/category-cards";
 import { Hero } from "@/components/site/hero";
 import { Reassurance } from "@/components/site/reassurance";
 import { EventsBand } from "@/components/site/whatsapp";
 import { SalonShowcase } from "@/components/site/salon-showcase";
-import { ErrorState, SectionTitle } from "@/components/site/states";
+import { ErrorState } from "@/components/site/states";
 import { getCategories } from "@/lib/data/catalog";
-import { getBeforeAfterPairs, getMedia } from "@/lib/data/media";
+import { getMedia } from "@/lib/data/media";
 import { getOpeningHours, getSalonSettings } from "@/lib/data/salon";
 import { SITE } from "@/config/site";
 
 export default async function HomePage() {
-  const [categories, salon, pairs, settings, hours] = await Promise.all([
-    getCategories(), getMedia("salon"), getBeforeAfterPairs(), getSalonSettings(), getOpeningHours(),
+  const [categories, salon, settings, hours] = await Promise.all([
+    getCategories(), getMedia("salon"), getSalonSettings(), getOpeningHours(),
   ]);
   // Données structurées : uniquement des informations confirmées par le salon.
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -37,12 +36,6 @@ export default async function HomePage() {
       {salon.length > 0 && (
         <section aria-label="Notre salon" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
           <SalonShowcase items={salon} />
-        </section>
-      )}
-      {pairs.length > 0 && (
-        <section aria-labelledby="ba-title" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
-          <SectionTitle><span id="ba-title">Avant / Après</span></SectionTitle>
-          <div className="mt-10"><BeforeAfter pairs={pairs.slice(0, 3)} /></div>
         </section>
       )}
       <Reassurance />

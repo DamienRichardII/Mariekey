@@ -31,4 +31,3 @@ export type Media = {
   sort_order: number;
 };
 
-export type BeforeAfterPair = { id: string; title: string | null; sort_order: number; before: Media; after: Media };

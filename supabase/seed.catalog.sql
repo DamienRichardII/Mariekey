@@ -1,10 +1,10 @@
 -- Catalogue Acuity (relevé le 17/10/2026, voir scripts/acuity-services.json). Idempotent.
 insert into public.service_categories (slug, name, image_path, sort_order) values
-  ('pose-customisation', 'Pose & customisation', '/images/categories/pose-perruque.jpg', 1),
-  ('confection', 'Confection de perruque', '/images/gallery/coiffure-bordeaux.jpg', 2),
-  ('coloration', 'Coloration', '/images/categories/coloration.jpg', 3),
+  ('pose-customisation', 'Pose & customisation', null, 1),
+  ('confection', 'Confection de perruque', null, 2),
+  ('coloration', 'Coloration', null, 3),
   ('soins-tissages', 'Soins & tissages', '/images/categories/soin-capillaire.jpg', 4),
-  ('makeup-total-look', 'Makeup & total look', '/images/gallery/queue-cote-peignoir.jpg', 5),
+  ('makeup-total-look', 'Makeup & total look', null, 5),
   ('formation', 'Formation', '/images/about/outils.jpg', 6)
 on conflict (slug) do update set name = excluded.name, image_path = excluded.image_path, sort_order = excluded.sort_order, is_active = true;
 
