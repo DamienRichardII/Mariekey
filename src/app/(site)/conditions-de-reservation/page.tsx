@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import { BookButton } from "@/components/site/book-button";
-import { LegalPage, ToFill } from "@/components/site/legal";
+import { LegalPage } from "@/components/site/legal";
 
 export const metadata: Metadata = { title: "Conditions de réservation", alternates: { canonical: "/conditions-de-reservation" } };
 
 export default function Page() {
   return (
     <LegalPage title="Conditions de réservation">
-      <section><h2>Réservation</h2>
-        <p>Le salon reçoit uniquement sur rendez-vous. Les rendez-vous se réservent en ligne via Acuity Scheduling.</p>
+      <section><h2>Rappel concernant les acomptes</h2>
+        <p>Lors de la prise de rendez-vous, il est de votre responsabilité de vérifier attentivement la date et l’horaire sélectionnés avant de valider votre réservation.</p>
+        <p>Si une erreur est commise dans le choix de la date et qu’un nouveau rendez-vous doit être pris, un nouvel acompte sera demandé pour la nouvelle réservation.</p>
+        <p>Les acomptes versés ne sont ni remboursables ni transférables sur un autre rendez-vous, quelle qu’en soit la raison.</p>
+        <p>Merci de votre compréhension et de votre vigilance lors de la réservation.</p>
         <div className="mt-4"><BookButton>Réserver</BookButton></div></section>
-      <section><h2>Paiement et acompte</h2><p><ToFill>modalités de paiement et éventuel acompte</ToFill></p></section>
-      <section><h2>Annulation et déplacement</h2><p><ToFill>délai d’annulation / de déplacement</ToFill></p></section>
-      <section><h2>Retard</h2><p><ToFill>politique en cas de retard</ToFill></p></section>
     </LegalPage>
   );
 }

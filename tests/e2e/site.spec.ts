@@ -40,9 +40,14 @@ test("WhatsApp dédié devis mariage / événements", async ({ page }) => {
   await expect(wa).toHaveAttribute("href", /wa\.me\/33613424089/);
 });
 
-test("pages légales : champs manquants signalés", async ({ page }) => {
+test("mentions légales : plus de champs SIRET / hébergeur à compléter", async ({ page }) => {
   await page.goto("/mentions-legales");
-  await expect(page.getByText(/\[À compléter/).first()).toBeVisible();
+  await expect(page.getByText(/SIRET|Hébergeur|Raison sociale|Directeur de la publication/)).toHaveCount(0);
+});
+
+test("conditions de réservation : rappel concernant les acomptes", async ({ page }) => {
+  await page.goto("/conditions-de-reservation");
+  await expect(page.getByText(/ne sont ni remboursables ni transférables/)).toBeVisible();
 });
 
 test("la galerie ouvre une photo en modale puis se ferme", async ({ page }) => {
