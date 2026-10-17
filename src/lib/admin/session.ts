@@ -32,7 +32,7 @@ export async function endSession() {
 }
 
 /** TEMPORAIRE : ADMIN_OPEN=true ouvre /admin sans mot de passe. À retirer dès que ADMIN_PASSWORD est défini. */
-const adminOpen = () => process.env.ADMIN_OPEN === "true";
+const adminOpen = () => process.env.ADMIN_OPEN?.trim() === "true";
 
 export async function isAdmin(): Promise<boolean> {
   if (adminOpen()) return true;
