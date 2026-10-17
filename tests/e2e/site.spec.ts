@@ -96,8 +96,8 @@ test("admin : toutes les pages exigent une connexion", async ({ page }) => {
 test("admin : un mauvais mot de passe est refusé", async ({ page }) => {
   await page.goto("/admin/login");
   // Sans ADMIN_PASSWORD (environnement de test nu), le formulaire n'est pas affiché : rien à tester.
-  test.skip((await page.getByLabel(/mot de passe/i).count()) === 0, "administration non configurée");
-  await page.getByLabel(/mot de passe/i).fill("pas-le-bon");
+  test.skip((await page.locator("#password").count()) === 0, "administration non configurée");
+  await page.locator("#password").fill("pas-le-bon");
   await page.getByRole("button", { name: /connexion|se connecter|entrer/i }).click();
   await expect(page.getByRole("alert")).toBeVisible();
   await expect(page).toHaveURL(/\/admin\/login/);
@@ -121,4 +121,24 @@ test("ebook : sans clé Stripe, pas de bouton d'achat et la page merci renvoie v
   await expect(page).toHaveURL(/\/ebook$/);
   const r = await page.request.get("/ebook/telechargement?session_id=cs_test_faux", { maxRedirects: 0 });
   expect(r.status()).toBe(307);
+});
+
+test("admin : mot de passe oublié, lien invalide et bouton œil", async ({ page }) => {
+  await page.goto("/admin/mot-de-passe-oublie");
+  await expect(page.getByRole("heading", { name: "Mot de passe oublié" })).toBeVisible();
+  await expect(page.getByLabel("Adresse e-mail")).toBeVisible();
+
+  await page.goto("/admin/nouveau-mot-de-passe");
+  await expect(page.getByText("Ce lien est invalide ou a expiré.")).toBeVisible();
+
+  await page.goto("about:blank"); // chargement complet, comme en suivant le lien d'un e-mail
+  await page.goto("/admin/nouveau-mot-de-passe#access_token=faux&type=recovery");
+  const pwd = page.getByLabel("Nouveau mot de passe");
+  await expect(pwd).toHaveAttribute("type", "password");
+  await page.getByRole("button", { name: "Afficher le mot de passe" }).first().click();
+  await expect(pwd).toHaveAttribute("type", "text");
+  await page.getByLabel("Confirmer le mot de passe").fill("0123456789");
+  await pwd.fill("0123456789");
+  await page.getByRole("button", { name: /Enregistrer/ }).click();
+  await expect(page.getByRole("alert").filter({ hasText: /lien|enregistré|autorisée/ })).toBeVisible();
 });

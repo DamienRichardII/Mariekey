@@ -39,3 +39,15 @@ Tout ce qui est modifié apparaît sur le site immédiatement. Les **rendez-vous
 - Les rendez-vous sont lus à chaque ouverture de page (pas de copie dans la base du site).
 - Les listes d'attente et paiements restent dans Acuity.
 - Pour les textes non listés dans « Textes » (ex. menu du bar de la page À propos, mentions légales), voir `src/config/` ou demander une évolution.
+
+## Créer son compte administrateur (mot de passe oublié)
+
+1. Dans Vercel, ajouter `ADMIN_EMAILS` avec l'adresse e-mail de la personne (plusieurs adresses : séparées par des virgules), puis Redeploy.
+2. Dans Supabase > Authentication > URL Configuration, ajouter dans « Redirect URLs » : `https://VOTRE-SITE/admin/nouveau-mot-de-passe`.
+3. La personne ouvre `/admin/login` > « Mot de passe oublié ? / Créer mon compte », saisit son adresse, clique sur le lien reçu par e-mail et choisit son mot de passe (10 caractères minimum, bouton œil pour le vérifier). Elle est ensuite connectée.
+4. Les connexions suivantes se font avec l'adresse e-mail et ce mot de passe. Seules les adresses de `ADMIN_EMAILS` sont acceptées.
+
+L'ancien mot de passe unique (`ADMIN_PASSWORD`) fonctionne toujours : laisser le champ e-mail vide.
+
+### E-mails via Resend
+Ajouter dans Vercel `RESEND_API_KEY` et `RESEND_FROM` (adresse d'un domaine vérifié dans Resend, par exemple `Mariekey Expert <contact@votre-domaine.fr>`), puis Redeploy. Le lien « mot de passe oublié » part alors par Resend (plus fiable que l'e-mail par défaut de Supabase). Sans ces deux variables, Supabase envoie l'e-mail lui-même.

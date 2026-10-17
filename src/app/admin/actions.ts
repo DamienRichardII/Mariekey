@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { STATIC_CATEGORIES, STATIC_SERVICES } from "@/config/catalog";
 import { CONTENT_GROUPS, type ContentField } from "@/config/content";
 import { STATIC_REVIEWS } from "@/config/reviews";
+import { MIN_PASSWORD, cleanEmail, sendRecoveryEmail, setPasswordFromToken, validEmail, verifyEmailLogin } from "@/lib/admin/accounts";
 import { endSession, passwordMatches, requireAdmin, startSession } from "@/lib/admin/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -33,10 +34,37 @@ function publish() {
 
 // --------------------------------------------------------------------------- session
 export async function login(_: unknown, form: FormData) {
-  if (!passwordMatches(str(form, "password"))) {
+  const email = cleanEmail(str(form, "email"));
+  const password = String(form.get("password") ?? "");
+  const ok = email ? await verifyEmailLogin(email, password) : passwordMatches(password);
+  if (!ok) {
     await new Promise((r) => setTimeout(r, 900));
-    return { error: "Mot de passe incorrect." };
+    return { error: email ? "Adresse e-mail ou mot de passe incorrect." : "Mot de passe incorrect." };
   }
+  await startSession();
+  redirect("/admin");
+}
+
+/** « Mot de passe oublié » : réponse identique que l'adresse soit autorisée ou non (pas de fuite d'information). */
+export async function requestPasswordReset(_: unknown, form: FormData) {
+  const email = cleanEmail(str(form, "email"));
+  if (!validEmail(email)) return { error: "Saisissez une adresse e-mail valide." };
+  const { rateLimited } = await sendRecoveryEmail(email);
+  if (rateLimited) return { error: "Trop de demandes. Réessayez dans une heure." };
+  await new Promise((r) => setTimeout(r, 600));
+  return { sent: true as const };
+}
+
+/** Étape finale du lien reçu par e-mail : crée / remplace le mot de passe puis ouvre la session. */
+export async function completePasswordReset(_: unknown, form: FormData) {
+  const password = String(form.get("password") ?? "");
+  const confirm = String(form.get("confirm") ?? "");
+  if (password.length < MIN_PASSWORD) return { error: `Le mot de passe doit contenir au moins ${MIN_PASSWORD} caractères.` };
+  if (password !== confirm) return { error: "Les deux mots de passe ne sont pas identiques." };
+  const result = await setPasswordFromToken(str(form, "token"), password);
+  if (result === "invalid") return { error: "Ce lien a expiré ou a déjà été utilisé. Demandez un nouveau lien." };
+  if (result === "forbidden") return { error: "Cette adresse n'est pas autorisée à administrer le site." };
+  if (result === "error") return { error: "Le mot de passe n'a pas pu être enregistré. Réessayez." };
   await startSession();
   redirect("/admin");
 }

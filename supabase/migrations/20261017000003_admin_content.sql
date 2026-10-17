@@ -37,7 +37,7 @@ alter table public.reviews enable row level security;
 alter table public.articles enable row level security;
 
 create policy site_content_read on public.site_content for select using (true);
-create policy reviews_read on public.reviews for select using (true);
+create policy reviews_read on public.reviews for select using (is_active);
 create policy articles_read on public.articles for select using (is_published and published_at <= now());
 
 revoke all on public.site_content, public.reviews, public.articles from anon, authenticated;

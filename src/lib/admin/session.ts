@@ -10,7 +10,12 @@ const secret = () =>
   process.env.ADMIN_SESSION_SECRET ?? process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY ?? "";
 const sign = (exp: string) => createHmac("sha256", secret()).update(`admin.${exp}`).digest("hex");
 
-export const adminConfigured = () => Boolean(process.env.ADMIN_PASSWORD && secret());
+/** Adresses e-mail autorisées à administrer le site (variable ADMIN_EMAILS, séparées par des virgules). */
+export const allowedEmails = () =>
+  (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+export const isAllowedEmail = (email: string) => allowedEmails().includes(email.trim().toLowerCase());
+
+export const adminConfigured = () => Boolean((process.env.ADMIN_PASSWORD || allowedEmails().length) && secret());
 
 export function passwordMatches(input: string): boolean {
   const expected = process.env.ADMIN_PASSWORD;
