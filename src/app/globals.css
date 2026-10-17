@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* Palette Mariekey Expert : noir chaud, blanc, crème, beige, marron noyer (celui du mobilier du salon). */
+@theme {
+  --color-ink: #12100e;          /* noir profond (CTA, textes) */
+  --color-ink-soft: #2a2622;
+  --color-paper: #ffffff;
+  --color-cream: #f8f4ee;        /* blanc cassé / crème */
+  --color-beige: #e9e0d3;        /* beige */
+  --color-sand: #d6c8b6;         /* beige soutenu (bordures marquées) */
+  --color-walnut: #6a4a35;       /* marron noyer (accents) */
+  --color-walnut-deep: #3f2c20;  /* marron profond */
+  --color-stone: #756e66;        /* gris chaud (texte secondaire, contraste AA sur blanc/crème) */
+  --color-line: #e7e0d6;         /* bordures discrètes */
+  --color-danger: #8f2d2d;
+  --color-ok: #3d5a3f;
+
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+
+  --radius-card: 1rem;
+  --shadow-soft: 0 1px 2px rgb(18 16 14 / 0.04), 0 8px 24px -12px rgb(18 16 14 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(18 16 14 / 0.05), 0 18px 36px -18px rgb(18 16 14 / 0.22);
+}
+
+:root { color-scheme: light; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 { font-weight: 400; }
+
+::selection { background: var(--color-beige); color: var(--color-ink); }
+
+/* Focus clavier visible partout */
+:focus-visible {
+  outline: 2px solid var(--color-walnut);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Zones de sécurité iPhone */
+.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+.safe-top { padding-top: env(safe-area-inset-top); }
+
+/* Défilement horizontal sans barre visible (catégories mobile) */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
