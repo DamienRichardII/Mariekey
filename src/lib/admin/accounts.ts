@@ -1,7 +1,6 @@
 import "server-only";
 import { SITE } from "@/config/site";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createPublicClient } from "@/lib/supabase/public";
 import { isAllowedEmail } from "@/lib/admin/session";
 
 export const MIN_PASSWORD = 10;
@@ -39,8 +38,7 @@ async function sendWithResend(to: string, link: string): Promise<boolean> {
 export async function sendRecoveryEmail(email: string): Promise<{ rateLimited: boolean }> {
   if (!isAllowedEmail(email)) return { rateLimited: false };
   const svc = createAdminClient();
-  const pub = createPublicClient();
-  if (!svc || !pub) return { rateLimited: false };
+  if (!svc) return { rateLimited: false };
   await svc.auth.admin.createUser({ email, email_confirm: true }); // erreur « déjà inscrit » ignorée
   const redirectTo = `${SITE.url}/admin/nouveau-mot-de-passe`;
   if (resendReady()) {
@@ -48,16 +46,17 @@ export async function sendRecoveryEmail(email: string): Promise<{ rateLimited: b
     const link = data?.properties?.action_link;
     if (link && (await sendWithResend(email, link))) return { rateLimited: false };
   }
-  const { error } = await pub.auth.resetPasswordForEmail(email, { redirectTo });
+  const { error } = await svc.auth.resetPasswordForEmail(email, { redirectTo });
+  if (error && error.status !== 429) console.error("[admin] envoi du lien de mot de passe impossible :", error.status, error.message);
   return { rateLimited: error?.status === 429 };
 }
 
 /** Connexion par e-mail + mot de passe (adresse autorisée uniquement). */
 export async function verifyEmailLogin(email: string, password: string): Promise<boolean> {
   if (!isAllowedEmail(email)) return false;
-  const pub = createPublicClient();
-  if (!pub) return false;
-  const { data, error } = await pub.auth.signInWithPassword({ email, password });
+  const svc = createAdminClient(); // clé serveur : ne dépend pas de la clé publique (anon)
+  if (!svc) return false;
+  const { data, error } = await svc.auth.signInWithPassword({ email, password });
   return !error && Boolean(data.user);
 }
 
