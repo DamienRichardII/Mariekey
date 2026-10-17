@@ -19,6 +19,8 @@ test("tous les boutons Réserver ouvrent Acuity", async ({ page }) => {
     const links = page.getByRole("link", { name: /^Réserver/ });
     await expect(links.first()).toBeVisible();
     for (const l of await links.all()) {
+      // « Réserver un appel gratuit » (mariées) passe par WhatsApp : testé séparément.
+      if (/appel gratuit/.test((await l.textContent()) ?? "")) continue;
       await expect(l).toHaveAttribute("href", ACUITY);
       await expect(l).toHaveAttribute("target", "_blank");
       await expect(l).toHaveAttribute("rel", /noopener/);
@@ -70,4 +72,11 @@ test("boutique : bannière « Bientôt disponible », accessible depuis le heade
   await page.getByRole("navigation", { name: "Navigation principale" }).getByRole("link", { name: "Boutique" }).first().click();
   await expect(page).toHaveURL(/\/boutique$/);
   await expect(page.getByText("Bientôt disponible").first()).toBeVisible();
+});
+
+test("accueil : bloc mariées avec appel gratuit via WhatsApp", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: /Maquillage & Coiffure Mariée/ })).toBeVisible();
+  await expect(page.getByText("+300 mariées sublimées")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Réserver un appel gratuit/ })).toHaveAttribute("href", /wa\.me\/33613424089/);
 });

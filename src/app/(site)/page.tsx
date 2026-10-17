@@ -1,3 +1,4 @@
+import { Bridal } from "@/components/site/bridal";
 import { Hero } from "@/components/site/hero";
 import { Reassurance } from "@/components/site/reassurance";
 import { Reviews } from "@/components/site/reviews";
@@ -27,6 +28,7 @@ export default async function HomePage() {
           <p className="font-serif text-2xl text-ink">MarieKey Expert, votre beauté, notre signature.</p>
         </div>
       </section>
+      <Bridal whatsapp={settings?.whatsapp} />
       {salon.length > 0 && (
         <section aria-label="Notre salon" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
           <SalonShowcase items={salon} />
