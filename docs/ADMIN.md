@@ -1,43 +1,41 @@
 # Guide d'administration
 
-## Espace administration : `/admin`
+L'espace d'administration est sur **`/admin`** (ex. https://votre-site.fr/admin). Il est protégé par un mot de passe.
+Tout ce qui est modifié apparaît sur le site immédiatement. Les **rendez-vous, disponibilités et paiements restent gérés dans Acuity** : le calendrier de l'admin les affiche en lecture seule.
 
-Page protégée par mot de passe, pour modifier le site sans code. Les changements apparaissent sur le site **immédiatement**.
-Les rendez-vous, disponibilités et paiements se gèrent **dans Acuity**, pas ici.
+## Mise en route (une seule fois, par le développeur)
 
-| Onglet | Ce qu'on peut faire |
-|---|---|
-| Prestations | Créer, modifier, masquer/afficher, supprimer ; prix, « à partir de », durée, textes, lien Acuity direct, ordre |
-| Catégories | Renommer, réordonner, masquer |
-| Photos | Ajouter / retirer / réordonner les photos du salon et de l'atelier (aucune photo de cliente) |
-| Infos du salon | Téléphone, WhatsApp, e-mail, adresse, horaires (note), Instagram / TikTok / Snapchat, mentions légales |
-
-**Première utilisation** : onglet Prestations > « Importer les prestations actuelles » (copie le catalogue Acuity intégré au site dans la base, pour le rendre modifiable). Rejouable sans doublons.
-
-**Photos** : tant qu'aucune photo n'est ajoutée à une section, le site affiche ses photos d'origine ; dès qu'une photo est ajoutée, seules les photos de l'admin s'affichent pour cette section.
-
-### Mise en place (une fois, par la personne qui gère Vercel)
-
-Variables d'environnement Vercel (Production) :
+1. **Base de données** : dans Supabase > SQL Editor, exécuter dans l'ordre `supabase/migrations/20261017000001_…`, `…000002_…` puis **`…000003_admin_content.sql`** (textes, avis, articles). Ne pas rejouer une migration déjà appliquée.
+2. **Variables Vercel** (Settings > Environment Variables), puis redéployer :
 
 | Variable | Rôle |
 |---|---|
-| `ADMIN_PASSWORD` | Mot de passe de l'espace admin (long, unique) à transmettre à la cheffe de projet |
-| `SUPABASE_SERVICE_ROLE_KEY` | Clé serveur Supabase (déjà présente si l'intégration Supabase est connectée). Ne jamais l'exposer au navigateur |
-| `NEXT_PUBLIC_SUPABASE_URL` | URL du projet Supabase |
-| `ADMIN_SESSION_SECRET` | Facultatif : secret de signature de session (sinon dérivé de la clé serveur) |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | lecture du site |
+| `SUPABASE_SERVICE_ROLE_KEY` | écriture depuis l'admin (secrète, jamais `NEXT_PUBLIC_`) |
+| `ADMIN_PASSWORD` | mot de passe de connexion (long, unique) |
+| `ACUITY_USER_ID`, `ACUITY_API_KEY` | calendrier : Acuity > Integrations > API |
+| `ADMIN_OPEN` | **à supprimer** : si `true`, l'admin s'ouvre sans mot de passe (dépannage uniquement) |
 
-Prérequis base : migrations de `supabase/migrations/` appliquées (tables + bucket `site-media`). Session : 12 h, cookie sécurisé, `/admin` exclu des moteurs de recherche.
-Changer le mot de passe : modifier `ADMIN_PASSWORD` sur Vercel puis redéployer ; les sessions en cours sont invalidées en changeant `ADMIN_SESSION_SECRET`.
+3. Se connecter sur `/admin`, puis cliquer « Importer les prestations actuelles » (Prestations) et « Importer les avis actuels » (Avis) pour pouvoir les modifier.
 
-## Alternative : tableau de bord Supabase (Table Editor)
+## Ce que Marie peut faire
 
-| Pour… | Table | Colonnes utiles |
-|---|---|---|
-| Prestation | `services` | `name`, `slug`, `category_id`, `short_description`, `description`, `duration_minutes`, `price_cents` (8000 = 80 €), `price_is_from`, `image_path`, `booking_url`, `is_active` |
-| Options d'une prestation (affichage) | `service_options` | `service_id`, `name`, `price_delta_cents`, `duration_delta_minutes` |
-| Catégories | `service_categories` | `name`, `sort_order`, `is_active` |
-| Photos | `media` (+ Storage `site-media`) | `section` : salon, about ; `path`, `alt`, `sort_order` |
-| Coordonnées, réseaux, mentions légales | `salon_settings` | `phone`, `email`, `whatsapp`, `address`, `social`, `hours_note`, `legal` |
+| Écran | Contenu |
+|---|---|
+| **Tableau de bord** | rendez-vous du jour et de la semaine, compteurs, raccourcis, alertes de configuration |
+| **Calendrier** | mois complet avec le nombre de rendez-vous par jour ; clic sur un jour = détail (heure, cliente, prestation, durée, prix, téléphone, e-mail, notes). Les annulés sont grisés. Bouton « Ouvrir Acuity » pour toute modification de rendez-vous |
+| **Prestations** | nom, catégorie, prix (« à partir de »), durée, descriptions, lien Acuity direct, afficher/masquer, supprimer |
+| **Catégories** | nom, ordre, visibilité |
+| **Textes** | titres et paragraphes : accueil (bienvenue, bloc mariées, titre des avis), chiffre clé « 12 ans », À propos, Équipe, Formation, Boutique, Ebook. Champ vidé = texte d'origine |
+| **Articles** | blog : titre, résumé, texte (paragraphes séparés par une ligne vide, `## ` pour un intertitre), image, date, publié/brouillon. Le lien « Blog » du pied de page apparaît dès le premier article publié |
+| **Avis** | ajouter, modifier, masquer, supprimer les avis de l'accueil. La note globale (« 5/5 · 2 avis Google ») se change dans Textes |
+| **Photos** | photos du salon et des outils (aucune photo de cliente) |
+| **Infos du salon** | téléphone, e-mail, WhatsApp, adresse, réseaux, mentions légales |
 
-Lien Acuity global : variable `NEXT_PUBLIC_BOOKING_URL`.
+## Points d'attention
+
+- Les photos et textes d'**avis** doivent être de vrais avis, publiés avec l'accord de leurs auteurs.
+- La clé API Acuity donne accès aux données des clientes : ne jamais la mettre dans le code ni la partager.
+- Les rendez-vous sont lus à chaque ouverture de page (pas de copie dans la base du site).
+- Les listes d'attente et paiements restent dans Acuity.
+- Pour les textes non listés dans « Textes » (ex. menu du bar de la page À propos, mentions légales), voir `src/config/` ou demander une évolution.

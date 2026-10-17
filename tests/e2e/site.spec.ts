@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const ACUITY = "https://app.acuityscheduling.com/schedule.php?owner=32171214";
-const PAGES = ["/", "/prestations", "/galerie", "/boutique", "/formation", "/equipe", "/ebook", "/a-propos", "/contact", "/mentions-legales", "/confidentialite", "/conditions-de-reservation"];
+const PAGES = ["/", "/prestations", "/galerie", "/boutique", "/formation", "/equipe", "/ebook", "/blog", "/a-propos", "/contact", "/mentions-legales", "/confidentialite", "/conditions-de-reservation"];
 
 for (const path of PAGES) {
   test(`${path} : se charge sans débordement horizontal`, async ({ page }) => {
@@ -79,4 +79,31 @@ test("accueil : bloc mariées avec appel gratuit via WhatsApp", async ({ page })
   await expect(page.getByRole("heading", { name: /Maquillage & Coiffure Mariée/ })).toBeVisible();
   await expect(page.getByText("+300 mariées sublimées")).toBeVisible();
   await expect(page.getByRole("link", { name: /Réserver un appel gratuit/ })).toHaveAttribute("href", /wa\.me\/33613424089/);
+});
+
+test("admin : toutes les pages exigent une connexion", async ({ page }) => {
+  for (const path of ["/admin", "/admin/calendrier", "/admin/prestations", "/admin/textes", "/admin/articles", "/admin/avis", "/admin/photos", "/admin/salon"]) {
+    await page.goto(path);
+    await expect(page).toHaveURL(/\/admin\/login$/);
+  }
+});
+
+test("admin : un mauvais mot de passe est refusé", async ({ page }) => {
+  await page.goto("/admin/login");
+  // Sans ADMIN_PASSWORD (environnement de test nu), le formulaire n'est pas affiché : rien à tester.
+  test.skip((await page.getByLabel(/mot de passe/i).count()) === 0, "administration non configurée");
+  await page.getByLabel(/mot de passe/i).fill("pas-le-bon");
+  await page.getByRole("button", { name: /connexion|se connecter|entrer/i }).click();
+  await expect(page.getByRole("alert")).toBeVisible();
+  await expect(page).toHaveURL(/\/admin\/login/);
+});
+
+test("blog : la page se charge (liste ou état vide)", async ({ page }) => {
+  await page.goto("/blog");
+  await expect(page.getByRole("heading", { name: /Conseils/ })).toBeVisible();
+});
+
+test("les pages d'administration ne sont pas indexées", async ({ request }) => {
+  const robots = await (await request.get("/robots.txt")).text();
+  expect(robots).toMatch(/Disallow: \/admin/);
 });

@@ -6,6 +6,7 @@ import { StatGrid } from "@/components/site/stat-grid";
 import { SectionTitle } from "@/components/site/states";
 import { WhatsAppButton } from "@/components/site/whatsapp";
 import { getServices } from "@/lib/data/catalog";
+import { getContent } from "@/lib/data/content";
 import { getSalonSettings } from "@/lib/data/salon";
 import { formatEUR } from "@/lib/utils";
 
@@ -17,17 +18,17 @@ export const metadata: Metadata = {
 };
 
 export default async function FormationPage() {
-  const [services, settings] = await Promise.all([getServices("formation"), getSalonSettings()]);
+  const [services, settings, t] = await Promise.all([getServices("formation"), getSalonSettings(), getContent()]);
   const classes = services.ok ? services.data : [];
   return (
     <>
       <div className="mx-auto max-w-5xl px-4 pt-12 sm:px-6 lg:px-8 lg:pt-20">
         <SectionTitle eyebrow="Formation">Se former avec Marie</SectionTitle>
         <p className="mt-8 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
-          Marie coiffe depuis 12 ans. Elle transmet ses techniques d’installation de perruque et de styling lors d’une journée de formation au salon.
+          {t["formation.intro"]}
         </p>
       </div>
-      <div className="mt-12"><StatGrid items={[{ value: "12 ans", label: "de coiffure" }]} /></div>
+      <div className="mt-12"><StatGrid items={[{ value: t["stats.years.value"], label: t["stats.years.label"] }]} /></div>
 
       <section aria-label="Formations" className="mx-auto max-w-5xl space-y-12 px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         {classes.map((c) => {

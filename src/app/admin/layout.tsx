@@ -9,8 +9,13 @@ export const metadata: Metadata = { title: { default: "Administration", template
 export const dynamic = "force-dynamic";
 
 const LINKS = [
-  { href: "/admin", label: "Prestations" },
+  { href: "/admin", label: "Tableau de bord" },
+  { href: "/admin/calendrier", label: "Calendrier" },
+  { href: "/admin/prestations", label: "Prestations" },
   { href: "/admin/categories", label: "Catégories" },
+  { href: "/admin/textes", label: "Textes" },
+  { href: "/admin/articles", label: "Articles" },
+  { href: "/admin/avis", label: "Avis" },
   { href: "/admin/photos", label: "Photos" },
   { href: "/admin/salon", label: "Infos du salon" },
 ];
@@ -20,7 +25,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-dvh bg-cream">
       <header className="border-b border-line bg-white">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
           <span className="font-serif text-xl text-ink">Mariekey · Admin</span>
           {authed && (
             <>
@@ -37,7 +42,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           )}
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
     </div>
   );
 }

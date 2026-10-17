@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { STATIC_CATEGORIES, STATIC_SERVICES } from "@/config/catalog";
+import { CONTENT_GROUPS, type ContentField } from "@/config/content";
+import { STATIC_REVIEWS } from "@/config/reviews";
 import { endSession, passwordMatches, requireAdmin, startSession } from "@/lib/admin/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -88,17 +90,17 @@ export async function saveService(form: FormData) {
 export async function setServiceActive(form: FormData) {
   await requireAdmin();
   const { error } = await db()!.from("services").update({ is_active: bool(form, "active") }).eq("id", str(form, "id"));
-  if (error) done("/admin", error.message, true);
+  if (error) done("/admin/prestations", error.message, true);
   publish();
-  done("/admin", bool(form, "active") ? "Prestation affichée sur le site." : "Prestation masquée du site.");
+  done("/admin/prestations", bool(form, "active") ? "Prestation affichée sur le site." : "Prestation masquée du site.");
 }
 
 export async function deleteService(form: FormData) {
   await requireAdmin();
   const { error } = await db()!.from("services").delete().eq("id", str(form, "id"));
-  if (error) done("/admin", error.message, true);
+  if (error) done("/admin/prestations", error.message, true);
   publish();
-  done("/admin", "Prestation supprimée.");
+  done("/admin/prestations", "Prestation supprimée.");
 }
 
 /** Copie le catalogue Acuity intégré au site dans la base, pour pouvoir le modifier. Rejouable : met à jour par slug. */
@@ -109,7 +111,7 @@ export async function importCatalog() {
     STATIC_CATEGORIES.map((c) => ({ slug: c.slug, name: c.name, image_path: c.image_path, sort_order: c.sort_order, is_active: true })),
     { onConflict: "slug" },
   );
-  if (e1) done("/admin", `Import impossible : ${e1.message}`, true);
+  if (e1) done("/admin/prestations", `Import impossible : ${e1.message}`, true);
   const { data: cats } = await client.from("service_categories").select("id, slug");
   const catId = new Map((cats ?? []).map((c) => [c.slug as string, c.id as string]));
   const rows = STATIC_SERVICES.flatMap((s) => {
@@ -123,9 +125,9 @@ export async function importCatalog() {
     }];
   });
   const { error: e2 } = await client.from("services").upsert(rows, { onConflict: "slug" });
-  if (e2) done("/admin", `Import impossible : ${e2.message}`, true);
+  if (e2) done("/admin/prestations", `Import impossible : ${e2.message}`, true);
   publish();
-  done("/admin", `${rows.length} prestations importées.`);
+  done("/admin/prestations", `${rows.length} prestations importées.`);
 }
 
 // --------------------------------------------------------------------------- catégories
@@ -212,4 +214,113 @@ export async function deletePhoto(form: FormData) {
   if (data && at >= 0) await client.storage.from("site-media").remove([decodeURIComponent(data.path.slice(at + marker.length))]);
   publish();
   done("/admin/photos", "Photo supprimée.");
+}
+
+// --------------------------------------------------------------------------- textes des pages
+export async function saveContentGroup(form: FormData) {
+  await requireAdmin();
+  const group = CONTENT_GROUPS.find((g) => g.id === str(form, "group"));
+  if (!group) done("/admin/textes", "Groupe de textes inconnu.", true);
+  const fields = Object.entries(group!.fields as Record<string, ContentField>);
+  const set: { key: string; value: string; updated_at: string }[] = [];
+  const reset: string[] = [];
+  for (const [key, f] of fields) {
+    const value = str(form, key);
+    if (value.length > 2000) done("/admin/textes", `« ${f.label} » est trop long (2000 caractères maximum).`, true);
+    // Vide ou identique au texte d'origine : on supprime la ligne, le site reprend le texte d'origine.
+    if (!value || value === f.default) reset.push(key);
+    else set.push({ key, value, updated_at: new Date().toISOString() });
+  }
+  const client = db()!;
+  if (set.length) {
+    const { error } = await client.from("site_content").upsert(set, { onConflict: "key" });
+    if (error) done("/admin/textes", error.message, true);
+  }
+  if (reset.length) {
+    const { error } = await client.from("site_content").delete().in("key", reset);
+    if (error) done("/admin/textes", error.message, true);
+  }
+  publish();
+  done("/admin/textes", `« ${group!.title} » enregistré. Le site est à jour.`);
+}
+
+// --------------------------------------------------------------------------- avis
+export async function saveReview(form: FormData) {
+  await requireAdmin();
+  const id = str(form, "id");
+  const author = str(form, "author");
+  const body = str(form, "body");
+  if (!author || !body) done("/admin/avis", "Le nom et le texte de l'avis sont obligatoires.", true);
+  const rating = Math.min(5, Math.max(1, int(form, "rating", 5)));
+  const row = { author, body, rating, source: str(form, "source") || "Google", is_active: bool(form, "is_active"), sort_order: int(form, "sort_order") };
+  const client = db()!;
+  const { error } = id ? await client.from("reviews").update(row).eq("id", id) : await client.from("reviews").insert(row);
+  if (error) done("/admin/avis", error.message, true);
+  publish();
+  done("/admin/avis", id ? "Avis enregistré." : "Avis ajouté.");
+}
+
+export async function deleteReview(form: FormData) {
+  await requireAdmin();
+  const { error } = await db()!.from("reviews").delete().eq("id", str(form, "id"));
+  if (error) done("/admin/avis", error.message, true);
+  publish();
+  done("/admin/avis", "Avis supprimé.");
+}
+
+/** Copie les avis actuellement affichés sur le site dans la base, pour pouvoir les modifier. */
+export async function importReviews() {
+  await requireAdmin();
+  const client = db()!;
+  const { count } = await client.from("reviews").select("id", { count: "exact", head: true });
+  if (count) done("/admin/avis", "Des avis existent déjà : import ignoré.", true);
+  const { error } = await client.from("reviews").insert(STATIC_REVIEWS.map((r, i) => ({ author: r.author, body: r.body, rating: r.rating, source: r.source, sort_order: i + 1, is_active: true })));
+  if (error) done("/admin/avis", error.message, true);
+  publish();
+  done("/admin/avis", "Avis importés.");
+}
+
+// --------------------------------------------------------------------------- articles
+export async function saveArticle(form: FormData) {
+  await requireAdmin();
+  const id = str(form, "id");
+  const back = id ? `/admin/articles/${id}` : "/admin/articles/nouveau";
+  const title = str(form, "title");
+  if (!title) done(back, "Le titre est obligatoire.", true);
+  const slug = slugify(str(form, "slug") || title);
+  if (!slug) done(back, "Titre invalide : impossible de créer l'adresse de l'article.", true);
+  const day = /^\d{4}-\d{2}-\d{2}$/.test(str(form, "published_at")) ? str(form, "published_at") : new Date().toISOString().slice(0, 10);
+  const client = db()!;
+
+  const row: Record<string, unknown> = {
+    title, slug, excerpt: optional(form, "excerpt"), body: str(form, "body"), image_alt: optional(form, "image_alt"),
+    is_published: bool(form, "is_published"), published_at: `${day}T00:00:00Z`, updated_at: new Date().toISOString(),
+  };
+
+  const file = form.get("image");
+  if (file instanceof File && file.size > 0) {
+    if (!IMAGE_TYPES.includes(file.type)) done(back, "Format d'image accepté : JPG, PNG, WebP ou AVIF.", true);
+    if (file.size > 10 * 1024 * 1024) done(back, "L'image dépasse 10 Mo : réduisez-la avant de l'envoyer.", true);
+    const key = `articles/${Date.now()}-${slugify(file.name.replace(/\.[^.]+$/, "")) || "image"}.${file.type.split("/")[1]}`;
+    const up = await client.storage.from("site-media").upload(key, file, { contentType: file.type, upsert: false });
+    if (up.error) done(back, `Envoi de l'image impossible : ${up.error.message}`, true);
+    row.image_path = client.storage.from("site-media").getPublicUrl(key).data.publicUrl;
+  } else if (bool(form, "remove_image")) {
+    row.image_path = null;
+  }
+
+  const { data, error } = id
+    ? await client.from("articles").update(row).eq("id", id).select("id").single()
+    : await client.from("articles").insert(row).select("id").single();
+  if (error) done(back, error.code === "23505" ? "Cette adresse (slug) est déjà utilisée par un autre article." : `Enregistrement impossible : ${error.message}`, true);
+  publish();
+  done(`/admin/articles/${data!.id}`, row.is_published ? "Article enregistré et publié sur le site." : "Brouillon enregistré (non visible sur le site).");
+}
+
+export async function deleteArticle(form: FormData) {
+  await requireAdmin();
+  const { error } = await db()!.from("articles").delete().eq("id", str(form, "id"));
+  if (error) done("/admin/articles", error.message, true);
+  publish();
+  done("/admin/articles", "Article supprimé.");
 }

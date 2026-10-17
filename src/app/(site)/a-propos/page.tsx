@@ -6,6 +6,8 @@ import { StatGrid } from "@/components/site/stat-grid";
 import { SalonShowcase } from "@/components/site/salon-showcase";
 import { SectionTitle } from "@/components/site/states";
 import { BAR_MENU } from "@/config/bar-menu";
+import { getContent } from "@/lib/data/content";
+import { fill } from "@/lib/data/content-fill";
 import { getMedia } from "@/lib/data/media";
 import { getSalonSettings } from "@/lib/data/salon";
 
@@ -13,16 +15,16 @@ export const revalidate = 60;
 export const metadata: Metadata = { title: "À propos", description: "Le salon Mariekey Expert à Gentilly : cadre, accueil et MKy Le Bar.", alternates: { canonical: "/a-propos" } };
 
 export default async function AboutPage() {
-  const [salon, about, settings] = await Promise.all([getMedia("salon"), getMedia("about"), getSalonSettings()]);
+  const [salon, about, settings, t] = await Promise.all([getMedia("salon"), getMedia("about"), getSalonSettings(), getContent()]);
   const tools = about[0];
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <SectionTitle eyebrow="À propos">Mariekey Expert</SectionTitle>
       <p className="mt-8 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
-        Marie coiffe depuis 12 ans. Salon de coiffure situé{settings?.address ? ` au ${settings.address}` : " à Gentilly (94)"}, ouvert uniquement sur rendez-vous.
+        {fill(t["about.intro"], { adresse: settings?.address ?? "Gentilly (94)" })}
       </p>
 
-      <div className="mt-12 -mx-4 sm:-mx-6 lg:-mx-8"><StatGrid items={[{ value: "12 ans", label: "de coiffure" }]} /></div>
+      <div className="mt-12 -mx-4 sm:-mx-6 lg:-mx-8"><StatGrid items={[{ value: t["stats.years.value"], label: t["stats.years.label"] }]} /></div>
 
       {salon.length > 0 && <section aria-label="Le salon" className="mt-14"><SalonShowcase items={salon} /></section>}
 

@@ -7,7 +7,7 @@ import { Logo } from "./logo";
 import { WhatsAppButton } from "./whatsapp";
 import { SocialIcons } from "./social-icons";
 
-export function Footer({ settings }: { settings: SalonSettings | null }) {
+export function Footer({ settings, hasBlog = false }: { settings: SalonSettings | null; hasBlog?: boolean }) {
   const hasContact = settings && (settings.phone || settings.email || settings.address || settings.whatsapp);
   return (
     <footer className="border-t border-line bg-cream">
@@ -19,7 +19,7 @@ export function Footer({ settings }: { settings: SalonSettings | null }) {
         <nav aria-label="Pied de page">
           <h2 className="mb-3 font-serif text-xl">Navigation</h2>
           <ul className="space-y-1 text-[15px] text-ink-soft">
-            {[...NAV, ...MORE_PAGES].map((i) => (<li key={i.href}><Link href={i.href} className="inline-block py-1.5 hover:text-ink">{i.label}</Link></li>))}
+            {[...NAV, ...MORE_PAGES, ...(hasBlog ? [{ href: "/blog", label: "Blog" }] : [])].map((i) => (<li key={i.href}><Link href={i.href} className="inline-block py-1.5 hover:text-ink">{i.label}</Link></li>))}
           </ul>
         </nav>
         <div>

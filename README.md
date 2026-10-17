@@ -27,6 +27,8 @@ npm run dev                       # http://localhost:3000
    Pour modifier le catalogue : Table Editor > `services` (voir `docs/ADMIN.md`) ou `scripts/acuity-services.json`.
 
 Le site lit uniquement le contenu actif (RLS : lecture publique, aucune écriture depuis le navigateur).
+L'espace `/admin` (mot de passe) permet à la cliente de gérer prestations, textes, articles, avis, photos et de consulter
+son calendrier Acuity : voir `docs/ADMIN.md` (migration `…000003_admin_content.sql` et variables `ACUITY_*` à ajouter).
 
 ## Déploiement (Vercel)
 
