@@ -40,4 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# PDF de l'ebook : à déposer dans Supabase Storage, jamais dans Git
+/ebook-a-deposer/

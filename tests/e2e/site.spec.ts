@@ -112,3 +112,13 @@ test("les pages d'administration ne sont pas indexées", async ({ request }) => 
   const robots = await (await request.get("/robots.txt")).text();
   expect(robots).toMatch(/Disallow: \/admin/);
 });
+
+test("ebook : sans clé Stripe, pas de bouton d'achat et la page merci renvoie vers /ebook", async ({ page }) => {
+  await page.goto("/ebook");
+  await expect(page.getByText("Bientôt disponible")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Acheter l.ebook/ })).toHaveCount(0);
+  await page.goto("/ebook/merci?session_id=cs_test_faux");
+  await expect(page).toHaveURL(/\/ebook$/);
+  const r = await page.request.get("/ebook/telechargement?session_id=cs_test_faux", { maxRedirects: 0 });
+  expect(r.status()).toBe(307);
+});
