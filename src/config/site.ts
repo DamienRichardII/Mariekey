@@ -4,7 +4,9 @@ export const SITE = {
   shortName: "Mariekey",
   locale: "fr-FR",
   /** URL publique canonique (variable d'environnement NEXT_PUBLIC_SITE_URL). */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"),
 } as const;
 
 /** Unique canal de réservation : Acuity Scheduling (modifiable via NEXT_PUBLIC_BOOKING_URL). */

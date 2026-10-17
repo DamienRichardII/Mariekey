@@ -24,7 +24,7 @@ async function call(auth: string, qs: URLSearchParams): Promise<{ status: number
 /** Rendez-vous entre deux dates (incluses, YYYY-MM-DD). Les annulés (requête séparée côté Acuity) sont ajoutés, marqués. */
 export async function fetchAppointments(minDate: string, maxDate: string): Promise<AcuityResult> {
   if (!acuityConfigured()) return { ok: false, reason: "not-configured", message: "Acuity n'est pas encore relié." };
-  const auth = Buffer.from(`${process.env.ACUITY_USER_ID}:${process.env.ACUITY_API_KEY}`).toString("base64");
+  const auth = Buffer.from(`${process.env.ACUITY_USER_ID?.trim()}:${process.env.ACUITY_API_KEY?.trim()}`).toString("base64");
   const base = { minDate, maxDate, max: "500", direction: "ASC" };
   try {
     const active = await call(auth, new URLSearchParams(base));

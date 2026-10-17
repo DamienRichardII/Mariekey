@@ -4,7 +4,10 @@ import "server-only";
 export const serverEnv = {
   get supabaseUrl() { return process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""; },
   get supabaseAnonKey() { return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""; },
-  get siteUrl() { return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"; },
+  get siteUrl() {
+    return process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
+  },
 };
 
 export function isSupabaseConfigured() {
