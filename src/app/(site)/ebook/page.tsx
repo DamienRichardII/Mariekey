@@ -19,12 +19,7 @@ export default function EbookPage() {
           sizes="(min-width:1024px) 380px, 80vw" className="mx-auto h-auto w-full max-w-sm rounded-2xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.25)]" />
         <div>
           <p className="inline-block rounded-full border border-walnut/40 px-5 py-1.5 text-xs font-medium uppercase tracking-[0.3em] text-walnut">Bientôt disponible</p>
-          <h2 className="mt-6 font-serif text-4xl sm:text-5xl">Bienvenue chez MarieKey Expert</h2>
-          <div className="mt-6 space-y-4 text-[16px] leading-relaxed text-ink-soft">
-            <p>Passionnée par la beauté et la mise en valeur de la féminité, je vous accueille dans mon univers dédié à la coiffure et au maquillage professionnel.</p>
-            <p>Spécialisée en coiffure, maquillage et personnalisation de perruques, je vous accompagne également lors de vos plus beaux événements.</p>
-            <p className="font-serif text-2xl text-ink">MarieKey Expert, votre beauté, notre signature.</p>
-          </div>
+          <h2 className="mt-6 font-serif text-4xl sm:text-5xl">Wig spécialiste</h2>
           <p className="mt-6 text-[15px] text-stone">Le contenu détaillé et le tarif seront annoncés prochainement.</p>
           <Link href="/formation" className="mt-6 inline-flex min-h-11 items-center gap-2 border-b border-ink pb-0.5 text-[15px] font-medium hover:text-walnut">
             Découvrir notre formation <ArrowRight size={16} aria-hidden />

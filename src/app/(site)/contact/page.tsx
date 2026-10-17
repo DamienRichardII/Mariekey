@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CalendarCheck, Mail, MapPin, Phone } from "lucide-react";
+import { CalendarCheck, Mail, MapPin, Phone, Star } from "lucide-react";
 import { BookButton } from "@/components/site/book-button";
 import { SocialIcons } from "@/components/site/social-icons";
 import { ErrorState, SectionTitle } from "@/components/site/states";
@@ -42,6 +42,15 @@ export default async function ContactPage() {
           )}
         </div>
       </div>
+      {s.address && (
+        <div className="mt-12 overflow-hidden rounded-2xl border border-line">
+          <iframe title="Carte : Mariekey Expert, Gentilly" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="h-80 w-full sm:h-96"
+            src={`https://www.google.com/maps?q=${encodeURIComponent(`Mariekey Expert, ${s.address}`)}&output=embed`} />
+        </div>
+      )}
+      <p className="mt-6 flex items-center gap-2 text-[15px] text-stone"><Star size={16} fill="currentColor" strokeWidth={0} className="text-walnut" aria-hidden />
+        5/5 · 2 avis Google
+      </p>
     </div>
   );
 }
