@@ -1,0 +1,32 @@
+{
+ "categories": [
+  {"slug":"pose-customisation","name":"Pose & customisation","image":"/images/categories/pose-perruque.jpg"},
+  {"slug":"confection","name":"Confection de perruque","image":"/images/gallery/coiffure-bordeaux.jpg"},
+  {"slug":"coloration","name":"Coloration","image":"/images/categories/coloration.jpg"},
+  {"slug":"soins-tissages","name":"Soins & tissages","image":"/images/categories/soin-capillaire.jpg"},
+  {"slug":"makeup-total-look","name":"Makeup & total look","image":"/images/gallery/queue-cote-peignoir.jpg"},
+  {"slug":"formation","name":"Formation","image":"/images/about/outils.jpg"}
+ ],
+ "services": [
+  ["formation","ONE ONE CLASS ( install x Styling )",null,27500,"Une journée intensive pour perfectionner vos techniques d’installation de perruque.","💇 Une journée intensive pour perfectionner vos techniques d’installation de perruque.\n\n✔ Analyse de la lace frontal & préparation des cheveux ( blanchiment des noeud )\n✔ Techniques de pose (colle, gel ou sans colle)\n✔ Personnalisation de la ligne frontale\n✔ Découpe, coiffage & mise en forme\n✔ Atelier pratique sur modèle\n✔ Conseils professionnels & entretien de la perruque\n\n🕘 10h30 – 16h45"],
+  ["coloration","Coloration JET BLACK",null,6600,"La perruque est à déposer 6 jours en avance ; neuve ou propre.","La perruque est à déposer 6jours en avance ; neuve ou propre ."],
+  ["confection","Confection de perruque ( Machine à coudre )",null,5600,"Bonnet et élastique inclus au prix.","Bonnet et élastique inclus au prix.\nDépôt 6 JOURS en avance\nJUSQU’À 3 paquets possible , pour l’ajout de paquet en plus prévoir 10 EUROS. PAR PAQUETS EN Supplément."],
+  ["confection","Confection closure wig Styling ( Frange )",45,9600,"Blanchiment des nœuds sans épilation, closure 2x6 ou 4x4 uniquement.","Blanchiment des noeud sans épilation , closure 2x6 ou 4x4 uniquement."],
+  ["confection","Confection de perruque sur place",45,6600,"Vous venez avec vos mèches, nous réalisons votre wig sur place.","Vous venez avec vos mèches , nous réalisons votre wig sur place ( +10€ à partir du 4 ème paquets)"],
+  ["pose-customisation","Customisation et pose simple closure ou lace simple",90,9600,"Dépôt en avance - 4 jours - styling inclus.","Dépôt en avance - 4JOURS- styling inclus."],
+  ["pose-customisation","Customisation & pose sans colle ( Closure )",45,6600,"Installation, découpe tulle, placement élastique/bande, décoloration des nœuds incluse, lissage uniquement.","Installation , découpe tulle , placement élastiqueBande , décoloration des noeud inclus , lissage uniquement."],
+  ["pose-customisation","Customisation et pose sans colle SUR PLACE",50,8600,"Découpe de la tulle, raie côté ou milieu, brushing lissage (sans nattes collées).","decoupe de la tulle , raie coté ou milieu , brushing lissage. ( SANS NATTES COLLÉES )"],
+  ["pose-customisation","CUSTOMISATION",null,5600,"Dépôt wig 1/2 jours.","DÉPÔT WIG 1/2 jours"],
+  ["pose-customisation","Customisation et pose Lace ou closure Styling inclus ( SOIN EXPRESS )",120,13600,"Shampoing, soin express, nattes et installation complète de votre perruque, styling inclus.","Ce service comprend un shampoing accompagné d’un soin express, la réalisation des nattes, ainsi que l’installation complète de votre perruque ,styling inclus (sauf carré) ,sans dépôt préalable de la wig."],
+  ["pose-customisation","Ponytail lace frontal ( Lace HD uniquement )",160,13600,"Customisation comprise (décoloration des nœuds sur place).","Customisation comprise ( décoloration des noeud sur place )\n* cheveux propre sans gras obligatoire"],
+  ["pose-customisation","BRUSHING REFRESH HAIR STYLING",45,4600,"Lissage ou boucle, idéal pour les tissages ouverts ou une simple remise en forme.","LISSAGE OU BOUCLE , idéal pour les tissage ouvert , ou une simple remise en forme."],
+  ["pose-customisation","Repose closure",80,7600,"Lissage ou boucle légère inclus, sans dépôt à l’avance.","Lissage ou boucle légère inclus\nSans dépôt à l’avance.\nLa wig doit être propre et en bon état.\nDes frais supplémentaires seront facturés si ces conditions ne sont pas respectées."],
+  ["pose-customisation","Repose Lace ( lissage ou boucle légère )",90,8600,"Sans dépôt à l’avance.","Sans dépôt à l’avance.\nLa wig doit être propre et en bon état.\nDes frais supplémentaires seront facturés si ces conditions ne sont pas respectées."],
+  ["soins-tissages","Shampoing Soins - Coupe des pointes - Lissage simple ou nattes collées",60,6600,"Votre moment détente, prenez soin de vos cheveux naturels.","Votre moment détente ,prenez soins de vos cheveux naturels."],
+  ["soins-tissages","Defrisage Mizani",90,5000,"Défrise efficacement les cheveux bouclés, frisés et crépus.","Défrise efficacement les cheveux bouclés, frisés et crépus.\nAide à réduire le volume et les frisottis.\nFacilite le coiffage quotidien.\nLaisse les cheveux plus lisses, doux et maniables.\nContient des agents conditionnants qui contribuent à protéger la fibre capillaire pendant le service chimique."],
+  ["soins-tissages","Tissage ouvert ( Flipover uniquement)",120,7600,"Réalisation des nattes et installation complète de votre tissage Flipover.","Ce service comprend la réalisation des nattes, ainsi que l’installation complète de votre TISSAGE Flipover\nSans dépôt à l’avance.\nLes mèches doivent être propre et en bon état.\nDes frais supplémentaires seront facturés si ces conditions ne sont pas respectées."],
+  ["makeup-total-look","NaturelGlam Signature",60,7600,"Teint frais.","Teint frais."],
+  ["makeup-total-look","SoftGlam Signature",85,9600,"Un maquillage élégant, doux, lumineux et naturel : l’effet « glamour sans effort ».","Le soft glam makeup est un maquillage élégant et sophistiqué qui reste doux, lumineux et naturel à l’œil. Il donne un effet “glamour sans effort” : le visage paraît parfaitement mis en valeur, sans maquillage trop chargé."],
+  ["makeup-total-look","Total look LACEWIG ( UNIQUEMENT OU CLOSUREWIG ( hair & makeup au choix)",180,25600,"Hair & makeup au choix ; nattes non incluses, styling simple boucle ou lissage.","NATTES NON INCLUS ET STYLING SIMPLE BOUCLE OU LISSAGE\nLES AUTRES MODÈLES SUR DEVIS RÉALISABLE SUR PLACE.\nDépôt wig en avance 2 À 3 JOURS EN AVANCE."]
+ ]
+}

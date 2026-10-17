@@ -1,14 +1,6 @@
 -- CONTENU RÉEL du site (utilisable en production) : catégories issues de la maquette et médias fournis par le salon.
--- Contient les coordonnées confirmées par le salon. Prix et professionnelles se saisissent dans /admin.
+-- Contient les coordonnées confirmées par le salon. Le catalogue est dans seed.catalog.sql.
 -- Idempotent : peut être rejoué sans doublon.
-
-insert into public.service_categories (slug, name, image_path, sort_order) values
-  ('lissage',         'Lissage',         '/images/categories/lissage.jpg',         1),
-  ('pose-perruque',   'Pose de perruque','/images/categories/pose-perruque.jpg',   2),
-  ('tresses',         'Tresses',         null,                                      3), -- photo à fournir : public/images/categories/tresses.jpg
-  ('coloration',      'Coloration',      '/images/categories/coloration.jpg',      4),
-  ('soin-capillaire', 'Soin capillaire', '/images/categories/soin-capillaire.jpg', 5)
-on conflict (slug) do update set image_path = excluded.image_path where service_categories.image_path is null;
 
 insert into public.media (kind, section, path, alt, sort_order)
 select v.kind, v.section, v.path, v.alt, v.ord

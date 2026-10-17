@@ -50,3 +50,16 @@ test("la galerie ouvre une photo en modale puis se ferme", async ({ page }) => {
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
+
+test("prestations : 20 prestations Acuity en 6 catégories, prix affichés", async ({ page }) => {
+  await page.goto("/prestations");
+  await expect(page.getByRole("link", { name: "Détails" })).toHaveCount(20);
+  await expect(page.locator("main section[id] h2")).toHaveCount(6);
+  await expect(page.getByText("275 €").first()).toBeVisible();
+});
+
+test("accueil : deux CTA de couverture (Réserver → Acuity, devis → WhatsApp)", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("main").getByRole("link", { name: /^Réserver/ }).first()).toHaveAttribute("href", ACUITY);
+  await expect(page.getByRole("link", { name: /Demander un devis/ }).first()).toHaveAttribute("href", /wa\.me\/33613424089/);
+});

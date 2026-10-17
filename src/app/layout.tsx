@@ -9,7 +9,7 @@ const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: { default: `${SITE.name} — Salon de coiffure`, template: `%s — ${SITE.name}` },
-  description: "Réservez en ligne votre rendez-vous chez Mariekey Expert : lissage, pose de perruque, tresses, coloration, soin capillaire.",
+  description: "Réservez en ligne votre rendez-vous chez Mariekey Expert : pose et customisation de perruque, confection, coloration, soins, makeup.",
   openGraph: { siteName: SITE.name, locale: "fr_FR", type: "website" },
 };
 

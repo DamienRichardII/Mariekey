@@ -34,7 +34,7 @@ export default async function ServicePage({ params }: Props) {
         <h1 className="mt-2 font-serif text-4xl leading-tight sm:text-5xl">{s.name}</h1>
         <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-[17px]">
           <span className="font-medium">{formatServicePrice(s.price_cents, s.price_is_from)}</span>
-          <span className="inline-flex items-center gap-1.5 text-stone"><Clock size={17} aria-hidden />{formatDuration(s.duration_minutes)}</span>
+          {s.duration_minutes && <span className="inline-flex items-center gap-1.5 text-stone"><Clock size={17} aria-hidden />{formatDuration(s.duration_minutes)}</span>}
         </div>
         {(s.description || s.short_description) && <p className="mt-6 whitespace-pre-line text-[16px] leading-relaxed text-ink-soft">{s.description ?? s.short_description}</p>}
 

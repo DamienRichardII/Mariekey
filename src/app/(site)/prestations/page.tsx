@@ -5,7 +5,7 @@ import { getCategories, getServices } from "@/lib/data/catalog";
 
 export const metadata: Metadata = {
   title: "Prestations",
-  description: "Lissage, pose de perruque, tresses, coloration, soin capillaire : découvrez les prestations de Mariekey Expert et réservez en ligne.",
+  description: "Pose et customisation de perruque, confection, coloration, soins, makeup : découvrez les prestations de Mariekey Expert et réservez en ligne.",
   alternates: { canonical: "/prestations" },
 };
 
@@ -34,7 +34,7 @@ export default async function PrestationsPage() {
               <section key={g.category.id} id={g.category.slug} aria-labelledby={`h-${g.category.slug}`} className="scroll-mt-28">
                 <h2 id={`h-${g.category.slug}`} className="font-serif text-3xl sm:text-4xl">{g.category.name}</h2>
                 <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {g.items.map((s) => (<li key={s.id}><ServiceCard service={s} fallbackImage={g.category.image_path} /></li>))}
+                  {g.items.map((s) => (<li key={s.id}><ServiceCard service={s} /></li>))}
                 </ul>
               </section>
             ))}

@@ -61,7 +61,7 @@ create table public.services (
   name text not null,
   short_description text,
   description text,
-  duration_minutes integer not null check (duration_minutes > 0 and duration_minutes <= 720),
+  duration_minutes integer check (duration_minutes is null or (duration_minutes > 0 and duration_minutes <= 720)),
   price_cents integer not null check (price_cents > 0),
   price_is_from boolean not null default false,
   preparation_notes text,

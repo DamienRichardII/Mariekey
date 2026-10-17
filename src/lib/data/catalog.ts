@@ -1,17 +1,25 @@
 import "server-only";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { STATIC_CATEGORIES, STATIC_SERVICES } from "@/config/catalog";
 import { createPublicClient } from "@/lib/supabase/public";
-import { STATIC_CATEGORIES } from "@/config/media";
 import type { Category, Service } from "@/lib/db-types";
 
 export type CatalogResult<T> = { ok: true; data: T } | { ok: false; reason: "not_configured" | "error" };
 
-export async function getCategories(): Promise<CatalogResult<Category[]>> {
+/** Catalogue de la base s'il contient au moins une prestation active ; sinon catalogue Acuity du code (src/config/catalog.ts). */
+async function dbCatalog(): Promise<SupabaseClient | null> {
   const db = createPublicClient();
+  if (!db) return null;
+  const { count, error } = await db.from("services").select("id", { count: "exact", head: true }).eq("is_active", true);
+  return !error && (count ?? 0) > 0 ? db : null;
+}
+
+export async function getCategories(): Promise<CatalogResult<Category[]>> {
+  const db = await dbCatalog();
   if (!db) return { ok: true, data: STATIC_CATEGORIES };
   const { data, error } = await db.from("service_categories").select("id, slug, name, image_path, sort_order")
     .eq("is_active", true).order("sort_order").order("name");
-  if (error || !data || data.length === 0) return { ok: true, data: STATIC_CATEGORIES };
-  // Visuel par défaut pour une catégorie dont l'image n'est pas renseignée en base.
+  if (error || !data) return { ok: false, reason: "error" };
   return { ok: true, data: (data as Category[]).map((c) => ({ ...c, image_path: c.image_path ?? STATIC_CATEGORIES.find((s) => s.slug === c.slug)?.image_path ?? null })) };
 }
 
@@ -31,8 +39,8 @@ function cleanOptions(s: RawService): Service {
 }
 
 export async function getServices(categorySlug?: string): Promise<CatalogResult<Service[]>> {
-  const db = createPublicClient();
-  if (!db) return { ok: false, reason: "not_configured" };
+  const db = await dbCatalog();
+  if (!db) return { ok: true, data: categorySlug ? STATIC_SERVICES.filter((s) => s.service_categories?.slug === categorySlug) : STATIC_SERVICES };
   let q = db.from("services").select(SERVICE_COLS).eq("is_active", true).order("sort_order").order("name");
   if (categorySlug) {
     const { data: cat } = await db.from("service_categories").select("id").eq("slug", categorySlug).eq("is_active", true).maybeSingle();
@@ -45,8 +53,8 @@ export async function getServices(categorySlug?: string): Promise<CatalogResult<
 }
 
 export async function getService(slug: string): Promise<CatalogResult<Service | null>> {
-  const db = createPublicClient();
-  if (!db) return { ok: false, reason: "not_configured" };
+  const db = await dbCatalog();
+  if (!db) return { ok: true, data: STATIC_SERVICES.find((s) => s.slug === slug) ?? null };
   const { data, error } = await db.from("services").select(SERVICE_COLS).eq("slug", slug).eq("is_active", true).maybeSingle();
   if (error) return { ok: false, reason: "error" };
   return { ok: true, data: data ? cleanOptions(data as unknown as RawService) : null };

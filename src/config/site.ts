@@ -25,6 +25,3 @@ export const BOTTOM_NAV = [
   { href: "/galerie", label: "Galerie", icon: "image" },
   { href: "/contact", label: "Contact", icon: "phone" },
 ] as const;
-
-/** Ordre et libellés des catégories de la maquette (les données réelles viennent de la base). */
-export const CATEGORY_SLUGS = ["lissage", "pose-perruque", "tresses", "coloration", "soin-capillaire"] as const;

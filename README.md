@@ -21,10 +21,10 @@ npm run dev                       # http://localhost:3000
 
 1. Créer un projet Supabase.
 2. Exécuter dans l'éditeur SQL (ou `supabase db push`) les fichiers de `supabase/migrations/` dans l'ordre.
-3. Exécuter `supabase/seed.content.sql` : catégories, médias fournis, coordonnées et horaires confirmés. Rejouable.
-4. Développement/préproduction seulement : `supabase/seed.demo.sql` ajoute 5 prestations **de démonstration**
-   (prix et textes factices, marqués « démo »). **Ne jamais l'exécuter en production** : saisir les vraies
-   prestations dans Table Editor > `services` (voir `docs/ADMIN.md`).
+3. Exécuter `supabase/seed.content.sql` : médias fournis, coordonnées et horaires confirmés. Rejouable.
+4. Exécuter `supabase/seed.catalog.sql` : les 20 prestations et 6 catégories relevées sur Acuity (rejouable ; met à jour
+   par `slug`). **Facultatif** : sans base, le site affiche déjà ce même catalogue depuis `src/config/catalog.ts`.
+   Pour modifier le catalogue : Table Editor > `services` (voir `docs/ADMIN.md`) ou `scripts/acuity-services.json`.
 
 Le site lit uniquement le contenu actif (RLS : lecture publique, aucune écriture depuis le navigateur).
 

@@ -7,7 +7,7 @@ import { Reveal } from "./reveal";
 export function CategoryCards({ categories }: { categories: Category[] }) {
   return (
     <section aria-label="Catégories de prestations" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-      <ul className="no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-pl-4 gap-3 sm:scroll-pl-6 lg:scroll-pl-0 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-5 lg:gap-5 lg:overflow-visible lg:px-0"
+      <ul className="no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-pl-4 gap-3 sm:scroll-pl-6 lg:scroll-pl-0 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-flow-col lg:auto-cols-fr lg:gap-5 lg:overflow-visible lg:px-0"
         tabIndex={0} aria-label="Faire défiler les catégories">
         {categories.map((c, i) => (
           <li key={c.id} className="w-[44%] shrink-0 snap-start sm:w-[30%] lg:w-auto">

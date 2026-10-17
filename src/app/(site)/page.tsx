@@ -11,8 +11,8 @@ import { getOpeningHours, getSalonSettings } from "@/lib/data/salon";
 import { SITE } from "@/config/site";
 
 export default async function HomePage() {
-  const [categories, hero, salon, pairs, settings, hours] = await Promise.all([
-    getCategories(), getMedia("hero"), getMedia("salon"), getBeforeAfterPairs(), getSalonSettings(), getOpeningHours(),
+  const [categories, salon, pairs, settings, hours] = await Promise.all([
+    getCategories(), getMedia("salon"), getBeforeAfterPairs(), getSalonSettings(), getOpeningHours(),
   ]);
   // Données structurées : uniquement des informations confirmées par le salon.
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -28,7 +28,7 @@ export default async function HomePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <Hero photo={hero[0] ? { path: hero[0].path, alt: hero[0].alt } : null} />
+      <Hero whatsapp={settings.whatsapp} />
       {categories.ok ? (
         categories.data.length > 0 && <CategoryCards categories={categories.data} />
       ) : (

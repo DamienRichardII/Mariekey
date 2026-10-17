@@ -1,9 +1,9 @@
-import type { Category, Media } from "@/lib/db-types";
+import type { Media } from "@/lib/db-types";
 
 /**
- * Médias et catégories par défaut (fichiers réels de /public). Utilisés quand la base ne renvoie rien
+ * Médias par défaut (fichiers réels de /public). Utilisés quand la base ne renvoie rien
  * (base non initialisée, vide ou indisponible) : le site n'est jamais privé de ses photos.
- * Les lignes `media` / `service_categories` de la base prennent le dessus dès qu'elles existent.
+ * Les lignes `media` de la base prennent le dessus dès qu'elles existent.
  */
 const p = (section: string, path: string, alt: string, sort_order: number, kind: Media["kind"] = "photo"): Media =>
   ({ id: `static-${section}-${sort_order}`, kind, section, path, alt, sort_order });
@@ -31,11 +31,3 @@ export const STATIC_MEDIA: Record<string, Media[]> = {
   ],
   about: [p("about", "/images/about/outils.jpg", "Outils de coiffure : lisseur, ciseaux, peignes et pinces", 1)],
 };
-
-export const STATIC_CATEGORIES: Category[] = [
-  { id: "static-lissage", slug: "lissage", name: "Lissage", image_path: "/images/categories/lissage.jpg", sort_order: 1 },
-  { id: "static-pose-perruque", slug: "pose-perruque", name: "Pose de perruque", image_path: "/images/categories/pose-perruque.jpg", sort_order: 2 },
-  { id: "static-tresses", slug: "tresses", name: "Tresses", image_path: null, sort_order: 3 },
-  { id: "static-coloration", slug: "coloration", name: "Coloration", image_path: "/images/categories/coloration.jpg", sort_order: 4 },
-  { id: "static-soin-capillaire", slug: "soin-capillaire", name: "Soin capillaire", image_path: "/images/categories/soin-capillaire.jpg", sort_order: 5 },
-];

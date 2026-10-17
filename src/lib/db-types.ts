@@ -20,7 +20,7 @@ export type ServiceOption = {
 export type Service = {
   id: string; category_id: string; slug: string; name: string;
   short_description: string | null; description: string | null;
-  duration_minutes: number; booking_url: string | null; price_cents: number; price_is_from: boolean;
+  duration_minutes: number | null; booking_url: string | null; price_cents: number; price_is_from: boolean;
   preparation_notes: string | null; image_path: string | null; sort_order: number;
   service_options?: ServiceOption[];
   service_categories?: { slug: string; name: string } | null;

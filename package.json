@@ -12,7 +12,7 @@
     "test": "vitest run",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
-    "db:seed:demo": "psql \"$DATABASE_URL\" -f supabase/seed.demo.sql",
+    "db:seed:catalog": "psql \"$DATABASE_URL\" -f supabase/seed.catalog.sql",
     "db:seed:content": "psql \"$DATABASE_URL\" -f supabase/seed.content.sql"
   },
   "dependencies": {
