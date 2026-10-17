@@ -31,20 +31,3 @@ export async function getSalonSettings(): Promise<SalonSettings> {
     social: { ...DEFAULT_SOCIAL, ...(row.social ?? {}) }, legal: row.legal ?? {},
   };
 }
-
-const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-
-/** Horaires affichés (table opening_hours, lundi → dimanche). */
-export async function getOpeningHours(): Promise<{ day: string; ranges: string[] }[]> {
-  const fallback = DAYS.map((day, i) => ({ day, ranges: i >= 1 && i <= 5 ? ["10h00 – 19h00"] : [] })); // mardi → samedi
-  const db = createPublicClient();
-  if (!db) return fallback;
-  const { data } = await db.from("opening_hours").select("weekday, is_open, open_time, close_time").order("weekday");
-  if (!data || !data.some((h) => h.is_open)) return fallback;
-  const byDay = new Map(data.map((h) => [h.weekday as number, h]));
-  const fmt = (t: string) => t.slice(0, 5).replace(":", "h");
-  return DAYS.map((day, i) => {
-    const h = byDay.get(i + 1);
-    return { day, ranges: h?.is_open && h.open_time && h.close_time ? [`${fmt(h.open_time)} – ${fmt(h.close_time)}`] : [] };
-  });
-}

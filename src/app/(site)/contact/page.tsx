@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { CalendarCheck, Mail, MapPin, Phone } from "lucide-react";
 import { BookButton } from "@/components/site/book-button";
 import { SocialIcons } from "@/components/site/social-icons";
 import { ErrorState, SectionTitle } from "@/components/site/states";
 import { WhatsAppButton } from "@/components/site/whatsapp";
-import { getOpeningHours, getSalonSettings } from "@/lib/data/salon";
+import { getSalonSettings } from "@/lib/data/salon";
 import { formatPhoneFR, mapsUrl } from "@/lib/utils";
 
 export const revalidate = 60;
-export const metadata: Metadata = { title: "Contact", description: "Adresse, téléphone, horaires et réservation de Mariekey Expert à Gentilly.", alternates: { canonical: "/contact" } };
+export const metadata: Metadata = { title: "Contact", description: "Adresse, téléphone et réservation sur rendez-vous de Mariekey Expert à Gentilly.", alternates: { canonical: "/contact" } };
 
 export default async function ContactPage() {
-  const [s, hours] = await Promise.all([getSalonSettings(), getOpeningHours()]);
+  const s = await getSalonSettings();
   if (!s) return <div className="mx-auto max-w-3xl px-4 py-16"><ErrorState reason="error" /></div>;
   const row = "flex gap-4";
   const icon = "mt-1 shrink-0 text-walnut";
@@ -26,14 +26,7 @@ export default async function ContactPage() {
           )}
           {s.phone && <p className={row}><Phone size={20} className={icon} aria-hidden /><a href={`tel:${s.phone.replace(/\s/g, "")}`} className="hover:text-walnut">{formatPhoneFR(s.phone)}</a></p>}
           {s.email && <p className={row}><Mail size={20} className={icon} aria-hidden /><a href={`mailto:${s.email}`} className="break-all hover:text-walnut">{s.email}</a></p>}
-          {hours?.some((h) => h.ranges.length) && (
-            <div className={row}><Clock size={20} className={icon} aria-hidden />
-              <dl className="w-full max-w-xs space-y-1 text-[15px]">
-                {hours.map((h) => <div key={h.day} className="flex justify-between gap-4"><dt>{h.day}</dt><dd className="text-stone">{h.ranges.length ? h.ranges.join(" · ") : "Fermé"}</dd></div>)}
-                {s.hours_note && <p className="pt-2 text-sm text-stone">{s.hours_note}</p>}
-              </dl>
-            </div>
-          )}
+          <p className={row}><CalendarCheck size={20} className={icon} aria-hidden />Uniquement sur rendez-vous</p>
           <SocialIcons social={s.social} className="-ml-3" />
         </address>
         <div className="space-y-5 rounded-2xl bg-cream p-6 sm:p-8">

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SectionTitle } from "@/components/site/states";
 
 export const metadata: Metadata = {
   title: "Ebook",
-  description: "L’ebook Mariekey Expert arrive bientôt.",
+  description: "L’ebook Mariekey Expert, Wig spécialiste : bientôt disponible.",
   alternates: { canonical: "/ebook" },
 };
 
@@ -13,14 +14,23 @@ export default function EbookPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <SectionTitle eyebrow="Produit digital">Notre ebook</SectionTitle>
-      <section aria-labelledby="soon-title" className="mt-10 rounded-2xl border border-line bg-beige/50 px-6 py-16 text-center sm:py-24">
-        <p className="inline-block rounded-full border border-walnut/40 px-5 py-1.5 text-xs font-medium uppercase tracking-[0.3em] text-walnut">Bientôt disponible</p>
-        <h2 id="soon-title" className="mt-6 font-serif text-4xl sm:text-5xl">L’ebook arrive bientôt</h2>
-        <p className="mx-auto mt-4 max-w-md text-[16px] text-stone">Le contenu et le tarif seront annoncés prochainement.</p>
-        <Link href="/formation" className="mt-8 inline-flex min-h-11 items-center gap-2 border-b border-ink pb-0.5 text-[15px] font-medium hover:text-walnut">
-          Découvrir notre formation <ArrowRight size={16} aria-hidden />
-        </Link>
-      </section>
+      <div className="mt-10 grid items-center gap-10 lg:grid-cols-[minmax(0,2fr)_3fr] lg:gap-16">
+        <Image src="/images/ebook/cover.jpg" alt="Couverture de l’ebook Mariekey Expert, Wig spécialiste" width={900} height={1164} priority
+          sizes="(min-width:1024px) 380px, 80vw" className="mx-auto h-auto w-full max-w-sm rounded-2xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.25)]" />
+        <div>
+          <p className="inline-block rounded-full border border-walnut/40 px-5 py-1.5 text-xs font-medium uppercase tracking-[0.3em] text-walnut">Bientôt disponible</p>
+          <h2 className="mt-6 font-serif text-4xl sm:text-5xl">Bienvenue chez MarieKey Expert</h2>
+          <div className="mt-6 space-y-4 text-[16px] leading-relaxed text-ink-soft">
+            <p>Passionnée par la beauté et la mise en valeur de la féminité, je vous accueille dans mon univers dédié à la coiffure et au maquillage professionnel.</p>
+            <p>Spécialisée en coiffure, maquillage et personnalisation de perruques, je vous accompagne également lors de vos plus beaux événements.</p>
+            <p className="font-serif text-2xl text-ink">MarieKey Expert, votre beauté, notre signature.</p>
+          </div>
+          <p className="mt-6 text-[15px] text-stone">Le contenu détaillé et le tarif seront annoncés prochainement.</p>
+          <Link href="/formation" className="mt-6 inline-flex min-h-11 items-center gap-2 border-b border-ink pb-0.5 text-[15px] font-medium hover:text-walnut">
+            Découvrir notre formation <ArrowRight size={16} aria-hidden />
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

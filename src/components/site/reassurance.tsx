@@ -2,7 +2,7 @@ import { CalendarCheck, Clock, MapPin, MessageCircle } from "lucide-react";
 
 const ITEMS = [
   { icon: CalendarCheck, label: "Réservation en ligne" },
-  { icon: Clock, label: "Du mardi au samedi, 10h – 19h" },
+  { icon: Clock, label: "Uniquement sur rendez-vous" },
   { icon: MapPin, label: "Gentilly (94)" },
   { icon: MessageCircle, label: "Devis mariage & événements" },
 ] as const;

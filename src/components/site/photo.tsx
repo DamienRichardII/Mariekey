@@ -18,7 +18,7 @@ type Props = {
  * Photo via next/image si le fichier existe réellement ; sinon emplacement sobre (aucune image inventée).
  * Le parent doit être positionné (relative) et dimensionné.
  */
-export function Photo({ src, alt, sizes, className, priority, position = "center", expected, rounded }: Props) {
+export function Photo({ src, alt, sizes, className, priority, position, expected, rounded }: Props) {
   const real = realAsset(src);
   if (!real) {
     return (
@@ -31,6 +31,6 @@ export function Photo({ src, alt, sizes, className, priority, position = "center
   }
   return (
     <Image src={real} alt={alt} fill sizes={sizes} priority={priority}
-      className={cn("object-cover", rounded, className)} style={{ objectPosition: position }} />
+      className={cn("object-cover", rounded, className)} style={position ? { objectPosition: position } : undefined} />
   );
 }

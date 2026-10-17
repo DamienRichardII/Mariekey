@@ -2,13 +2,12 @@ import Link from "next/link";
 import { MORE_PAGES, NAV } from "@/config/site";
 import { formatPhoneFR } from "@/lib/utils";
 import type { SalonSettings } from "@/lib/db-types";
+import { BookButton } from "./book-button";
 import { Logo } from "./logo";
 import { WhatsAppButton } from "./whatsapp";
 import { SocialIcons } from "./social-icons";
 
-type Hours = { day: string; ranges: string[] }[] | null;
-
-export function Footer({ settings, hours }: { settings: SalonSettings | null; hours: Hours }) {
+export function Footer({ settings }: { settings: SalonSettings | null }) {
   const hasContact = settings && (settings.phone || settings.email || settings.address || settings.whatsapp);
   return (
     <footer className="border-t border-line bg-cream">
@@ -37,17 +36,9 @@ export function Footer({ settings, hours }: { settings: SalonSettings | null; ho
           )}
         </div>
         <div>
-          <h2 className="mb-3 font-serif text-xl">Horaires</h2>
-          {hours && hours.some((h) => h.ranges.length) ? (
-            <dl className="space-y-1 text-[15px] text-ink-soft">
-              {hours.map((h) => (
-                <div key={h.day} className="flex justify-between gap-4"><dt>{h.day}</dt><dd className="text-right">{h.ranges.length ? h.ranges.join(" · ") : "Fermé"}</dd></div>
-              ))}
-            </dl>
-          ) : (
-            <p className="text-[15px] text-stone">Horaires à venir.</p>
-          )}
-          {settings?.hours_note && <p className="mt-2 text-sm text-stone">{settings.hours_note}</p>}
+          <h2 className="mb-3 font-serif text-xl">Rendez-vous</h2>
+          <p className="text-[15px] text-ink-soft">Uniquement sur rendez-vous.</p>
+          <p className="mt-3"><BookButton variant="outline" className="min-h-11 px-5 text-sm">Réserver</BookButton></p>
         </div>
       </div>
       <div className="border-t border-line">

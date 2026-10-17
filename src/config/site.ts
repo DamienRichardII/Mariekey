@@ -17,14 +17,14 @@ export const NAV = [
   { href: "/formation", label: "Formation" },
   { href: "/galerie", label: "Galerie" },
   { href: "/boutique", label: "Boutique" },
-  { href: "/a-propos", label: "À propos" },
+  { href: "/ebook", label: "Ebook" },
   { href: "/contact", label: "Contact" },
 ] as const;
 
 /** Pages complémentaires (pied de page). */
 export const MORE_PAGES = [
   { href: "/equipe", label: "Notre équipe" },
-  { href: "/ebook", label: "Ebook" },
+  { href: "/a-propos", label: "À propos" },
 ] as const;
 
 export const BOTTOM_NAV = [

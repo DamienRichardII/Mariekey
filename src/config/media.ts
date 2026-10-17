@@ -13,7 +13,6 @@ export const STATIC_MEDIA: Record<string, Media[]> = {
     p("salon", "/images/salon/salon-reception.jpg", "Accueil du salon : comptoir noir, canapé beige et enseigne Mariekey Expert", 1),
     p("salon", "/images/salon/salon-miroir.jpg", "Poste de coiffure avec grand miroir arrondi et fauteuil noir", 2),
     p("salon", "/images/salon/salon-lavage.jpg", "Espace lavage du salon : bac, fauteuil noir et enseigne MKy", 3),
-    p("salon", "/images/salon/salon-entree.jpg", "Entrée du salon, fauteuil crème et parquet foncé", 4),
   ],
   about: [p("about", "/images/about/outils.jpg", "Outils de coiffure : lisseur, ciseaux, peignes et pinces", 1)],
 };

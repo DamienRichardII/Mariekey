@@ -6,23 +6,18 @@ import { SalonShowcase } from "@/components/site/salon-showcase";
 import { ErrorState } from "@/components/site/states";
 import { getCategories } from "@/lib/data/catalog";
 import { getMedia } from "@/lib/data/media";
-import { getOpeningHours, getSalonSettings } from "@/lib/data/salon";
+import { getSalonSettings } from "@/lib/data/salon";
 import { SITE } from "@/config/site";
 
 export default async function HomePage() {
-  const [categories, salon, settings, hours] = await Promise.all([
-    getCategories(), getMedia("salon"), getSalonSettings(), getOpeningHours(),
+  const [categories, salon, settings] = await Promise.all([
+    getCategories(), getMedia("salon"), getSalonSettings(),
   ]);
   // Données structurées : uniquement des informations confirmées par le salon.
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const jsonLd = {
     "@context": "https://schema.org", "@type": "HairSalon", name: SITE.name, url: SITE.url,
     ...(settings?.phone && { telephone: settings.phone }),
     ...(settings?.address && { address: { "@type": "PostalAddress", streetAddress: settings.address, addressCountry: "FR" } }),
-    openingHoursSpecification: (hours ?? []).flatMap((h, i) => {
-      const m = h.ranges[0]?.match(/(\d+)h(\d+) – (\d+)h(\d+)/);
-      return m ? [{ "@type": "OpeningHoursSpecification", dayOfWeek: days[i], opens: `${m[1]}:${m[2]}`, closes: `${m[3]}:${m[4]}` }] : [];
-    }),
   };
   return (
     <>

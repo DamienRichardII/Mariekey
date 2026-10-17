@@ -16,7 +16,7 @@ export function Hero({ whatsapp }: { whatsapp: string | null | undefined }) {
       <h1 id="hero-title" className="sr-only">Mariekey Expert — salon de coiffure à Gentilly</h1>
       <div className="relative h-[42svh] min-h-[260px] lg:h-[calc(100svh-72px)] lg:max-h-[820px]">
         <Photo src="/images/hero/cover.jpg" alt="Façade du salon Mariekey Expert, enseigne lumineuse et vitrine aux rideaux clairs"
-          sizes="100vw" priority position="50% 20%" expected="public/images/hero/cover.jpg" />
+          sizes="100vw" priority className="object-[50%_20%] lg:object-[50%_0%]" expected="public/images/hero/cover.jpg" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 hidden h-2/5 bg-gradient-to-t from-black/45 to-transparent lg:block" />
       </div>
       <div className="flex flex-col items-center gap-3 px-6 py-8 sm:flex-row sm:justify-center sm:gap-4 lg:absolute lg:inset-x-0 lg:bottom-0 lg:pb-14 lg:pt-0">

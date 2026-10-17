@@ -12,7 +12,6 @@ Les rendez-vous, disponibilités et paiements se gèrent **dans Acuity**, pas ic
 | Photos / vidéos | `media` (+ Storage `site-media`) | `section` : salon, about (aucune photo de cliente) ; `path`, `alt`, `sort_order` |
 | Coordonnées, WhatsApp, réseaux | `salon_settings` | `phone`, `email`, `whatsapp`, `address`, `social` (`{"instagram":"https://…"}`), `hours_note` |
 | Mentions légales | `salon_settings.legal` | clés : `raison_sociale`, `siret`, `code_postal`, `directeur_publication`, `hebergeur` |
-| Horaires affichés | `opening_hours` | `is_open`, `open_time`, `close_time` (1 = lundi … 7 = dimanche) |
 
 Ajouter une photo : Storage > `site-media` > envoyer le fichier, puis ajouter une ligne `media` avec son URL publique comme `path`.
 Réseaux sociaux : une icône n'apparaît que si l'URL est renseignée. Lien Acuity global : variable `NEXT_PUBLIC_BOOKING_URL`.
