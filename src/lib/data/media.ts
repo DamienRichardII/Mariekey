@@ -1,13 +1,15 @@
 import "server-only";
 import { createPublicClient } from "@/lib/supabase/public";
+import { STATIC_MEDIA } from "@/config/media";
 import type { BeforeAfterPair, Media } from "@/lib/db-types";
 
 export async function getMedia(section: string): Promise<Media[]> {
+  const fallback = STATIC_MEDIA[section] ?? [];
   const db = createPublicClient();
-  if (!db) return [];
+  if (!db) return fallback;
   const { data } = await db.from("media").select("id, kind, section, path, alt, sort_order")
     .eq("section", section).eq("is_active", true).order("sort_order");
-  return (data ?? []) as Media[];
+  return data && data.length > 0 ? (data as Media[]) : fallback;
 }
 
 /** Paires avant/après : uniquement celles dont les deux visuels sont identifiés et actifs. */

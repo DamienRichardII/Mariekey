@@ -4,8 +4,8 @@
 @theme {
   --color-ink: #12100e;          /* noir profond (CTA, textes) */
   --color-ink-soft: #2a2622;
-  --color-paper: #ffffff;
-  --color-cream: #f8f4ee;        /* blanc cassé / crème */
+  --color-paper: #fffdf9;   /* blanc chaud */
+  --color-cream: #f7f2ea;        /* blanc cassé / crème */
   --color-beige: #e9e0d3;        /* beige */
   --color-sand: #d6c8b6;         /* beige soutenu (bordures marquées) */
   --color-walnut: #6a4a35;       /* marron noyer (accents) */

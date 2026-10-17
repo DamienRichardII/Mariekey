@@ -1,15 +1,18 @@
 import "server-only";
 import { createPublicClient } from "@/lib/supabase/public";
+import { STATIC_CATEGORIES } from "@/config/media";
 import type { Category, Service } from "@/lib/db-types";
 
 export type CatalogResult<T> = { ok: true; data: T } | { ok: false; reason: "not_configured" | "error" };
 
 export async function getCategories(): Promise<CatalogResult<Category[]>> {
   const db = createPublicClient();
-  if (!db) return { ok: false, reason: "not_configured" };
+  if (!db) return { ok: true, data: STATIC_CATEGORIES };
   const { data, error } = await db.from("service_categories").select("id, slug, name, image_path, sort_order")
     .eq("is_active", true).order("sort_order").order("name");
-  return error ? { ok: false, reason: "error" } : { ok: true, data: data as Category[] };
+  if (error || !data || data.length === 0) return { ok: true, data: STATIC_CATEGORIES };
+  // Visuel par défaut pour une catégorie dont l'image n'est pas renseignée en base.
+  return { ok: true, data: (data as Category[]).map((c) => ({ ...c, image_path: c.image_path ?? STATIC_CATEGORIES.find((s) => s.slug === c.slug)?.image_path ?? null })) };
 }
 
 const SERVICE_COLS =

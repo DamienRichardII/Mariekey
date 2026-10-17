@@ -22,15 +22,15 @@ export function WhatsAppButton({ number, variant = "primary", className, label =
 export function EventsBand({ number }: { number: string | null | undefined }) {
   if (!number) return null;
   return (
-    <section aria-labelledby="events-title" className="bg-ink text-white">
+    <section aria-labelledby="events-title" className="border-y border-line bg-beige/60">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 py-14 text-center lg:flex-row lg:justify-between lg:gap-10 lg:text-left">
         <div>
           <h2 id="events-title" className="font-serif text-3xl sm:text-4xl">Mariage &amp; événements</h2>
-          <p className="mt-2 max-w-xl text-[15px] text-white/75">
+          <p className="mt-2 max-w-xl text-[15px] text-stone">
             Pour une réservation mariée, une demande de devis ou un événement, contactez-nous directement sur WhatsApp.
           </p>
         </div>
-        <WhatsAppButton number={number} variant="outline" label="Demander un devis sur WhatsApp" className="shrink-0 border-white" />
+        <WhatsAppButton number={number} variant="outline" label="Demander un devis sur WhatsApp" className="shrink-0" />
       </div>
     </section>
   );
