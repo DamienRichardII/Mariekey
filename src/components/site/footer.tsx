@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NAV } from "@/config/site";
+import { MORE_PAGES, NAV } from "@/config/site";
 import { formatPhoneFR } from "@/lib/utils";
 import type { SalonSettings } from "@/lib/db-types";
 import { Logo } from "./logo";
@@ -20,7 +20,7 @@ export function Footer({ settings, hours }: { settings: SalonSettings | null; ho
         <nav aria-label="Pied de page">
           <h2 className="mb-3 font-serif text-xl">Navigation</h2>
           <ul className="space-y-1 text-[15px] text-ink-soft">
-            {NAV.map((i) => (<li key={i.href}><Link href={i.href} className="inline-block py-1.5 hover:text-ink">{i.label}</Link></li>))}
+            {[...NAV, ...MORE_PAGES].map((i) => (<li key={i.href}><Link href={i.href} className="inline-block py-1.5 hover:text-ink">{i.label}</Link></li>))}
           </ul>
         </nav>
         <div>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { BookButton } from "@/components/site/book-button";
 import { Photo } from "@/components/site/photo";
+import { StatGrid } from "@/components/site/stat-grid";
 import { SalonShowcase } from "@/components/site/salon-showcase";
 import { SectionTitle } from "@/components/site/states";
 import { BAR_MENU } from "@/config/bar-menu";
@@ -17,8 +19,10 @@ export default async function AboutPage() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <SectionTitle eyebrow="À propos">Mariekey Expert</SectionTitle>
       <p className="mt-8 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
-        Salon de coiffure situé{settings?.address ? ` au ${settings.address}` : " à Gentilly (94)"}, ouvert uniquement sur rendez-vous.
+        Marie coiffe depuis 12 ans. Salon de coiffure situé{settings?.address ? ` au ${settings.address}` : " à Gentilly (94)"}, ouvert uniquement sur rendez-vous.
       </p>
+
+      <div className="mt-12 -mx-4 sm:-mx-6 lg:-mx-8"><StatGrid items={[{ value: "12 ans", label: "de coiffure" }]} /></div>
 
       {salon.length > 0 && <section aria-label="Le salon" className="mt-14"><SalonShowcase items={salon} /></section>}
 
@@ -45,6 +49,8 @@ export default async function AboutPage() {
       <section aria-labelledby="shop-title" className="mt-20 rounded-2xl bg-cream px-6 py-12 text-center">
         <h2 id="shop-title" className="font-serif text-3xl">Boutique</h2>
         <p className="mx-auto mt-2 max-w-md text-[15px] text-stone">Bientôt disponible.</p>
+        <Link href="/equipe" className="mr-6 mt-4 inline-block border-b border-ink pb-0.5 text-[15px] font-medium hover:text-walnut">Notre équipe</Link>
+        <Link href="/boutique" className="mt-4 inline-block border-b border-ink pb-0.5 text-[15px] font-medium hover:text-walnut">Voir la boutique</Link>
       </section>
 
       <div className="mt-14 flex justify-center"><BookButton size="lg">Réserver mon rendez-vous</BookButton></div>

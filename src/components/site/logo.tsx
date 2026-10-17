@@ -3,15 +3,16 @@ import { logoAsset } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
 /**
- * Logo : utilise le fichier fourni (public/images/logo/logo.svg|png|webp) dès qu'il existe.
- * En attendant, une composition typographique PROVISOIRE (non-définitive) tient la place du logo.
+ * Logo : fichier fourni par le salon (public/images/logo/logo.png, fond transparent).
+ * Repli typographique provisoire uniquement si le fichier est absent.
  */
 export function Logo({ size = "md", className, inverted = false }: { size?: "sm" | "md" | "xl"; className?: string; inverted?: boolean }) {
   const file = logoAsset();
-  const heights = { sm: 28, md: 40, xl: 120 } as const;
+  const heights = { sm: 30, md: 44, xl: 120 } as const;
+  const RATIO = 768 / 231; // proportions du fichier logo fourni
   if (file) {
     return (
-      <Image src={file} alt="Mariekey Expert" width={heights[size] * 4} height={heights[size]} priority={size === "xl"}
+      <Image src={file} alt="Mariekey Expert" width={Math.round(heights[size] * RATIO)} height={heights[size]} priority={size === "xl"}
         className={cn("h-auto w-auto", className)} style={{ height: heights[size] }} />
     );
   }

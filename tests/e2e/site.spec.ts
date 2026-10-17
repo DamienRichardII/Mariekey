@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const ACUITY = "https://app.acuityscheduling.com/schedule.php?owner=32171214";
-const PAGES = ["/", "/prestations", "/galerie", "/a-propos", "/contact", "/mentions-legales", "/confidentialite", "/conditions-de-reservation"];
+const PAGES = ["/", "/prestations", "/galerie", "/boutique", "/formation", "/equipe", "/ebook", "/a-propos", "/contact", "/mentions-legales", "/confidentialite", "/conditions-de-reservation"];
 
 for (const path of PAGES) {
   test(`${path} : se charge sans débordement horizontal`, async ({ page }) => {
@@ -17,7 +17,7 @@ test("tous les boutons Réserver ouvrent Acuity", async ({ page }) => {
   for (const path of ["/", "/contact", "/galerie", "/a-propos"]) {
     await page.goto(path);
     const links = page.getByRole("link", { name: /^Réserver/ });
-    expect(await links.count()).toBeGreaterThan(0);
+    await expect(links.first()).toBeVisible();
     for (const l of await links.all()) {
       await expect(l).toHaveAttribute("href", ACUITY);
       await expect(l).toHaveAttribute("target", "_blank");
@@ -62,4 +62,12 @@ test("accueil : deux CTA de couverture (Réserver → Acuity, devis → WhatsApp
   await page.goto("/");
   await expect(page.locator("main").getByRole("link", { name: /^Réserver/ }).first()).toHaveAttribute("href", ACUITY);
   await expect(page.getByRole("link", { name: /Demander un devis/ }).first()).toHaveAttribute("href", /wa\.me\/33613424089/);
+});
+
+test("boutique : bannière « Bientôt disponible », accessible depuis le header", async ({ page }) => {
+  await page.goto("/");
+  if ((page.viewportSize()?.width ?? 1440) < 1024) await page.getByRole("button", { name: "Ouvrir le menu" }).click();
+  await page.getByRole("navigation", { name: "Navigation principale" }).getByRole("link", { name: "Boutique" }).first().click();
+  await expect(page).toHaveURL(/\/boutique$/);
+  await expect(page.getByText("Bientôt disponible").first()).toBeVisible();
 });

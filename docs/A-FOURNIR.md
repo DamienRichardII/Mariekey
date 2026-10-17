@@ -8,7 +8,7 @@
 - Liens Instagram, TikTok, Snapchat (icônes masquées tant qu'ils sont vides).
 
 **Fichiers**
-- Logo (SVG de préférence) → `public/images/logo/logo.svg` (logotype provisoire en attendant).
+- Logo : intégré (PNG). Une version SVG vectorielle serait plus nette sur grand écran.
 - Photo « Tresses » (catégorie sans visuel pour l'instant).
 - Une vraie vidéo du salon si souhaitée (les 3 vidéos fournies sont en galerie ; aucune ne montre le salon).
 - Photos avant/après identifiées avec certitude (section masquée sinon).
