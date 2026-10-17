@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: { default: `${SITE.name} — Salon de coiffure`, template: `%s — ${SITE.name}` },
   description: "Réservez en ligne votre rendez-vous chez Mariekey Expert : pose et customisation de perruque, confection, coloration, soins, makeup.",
-  openGraph: { siteName: SITE.name, locale: "fr_FR", type: "website" },
+  openGraph: { siteName: SITE.name, locale: "fr_FR", type: "website", title: `${SITE.name} — Salon de coiffure`, description: "Pose et customisation de perruque, confection, coloration, soins, makeup à Gentilly. Réservation en ligne.", images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Mariekey Expert" }] },
+  twitter: { card: "summary_large_image", images: ["/twitter-image.png"] },
 };
 
 export const viewport: Viewport = {
